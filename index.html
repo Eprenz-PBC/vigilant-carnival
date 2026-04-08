@@ -20,7 +20,8 @@
                 --porcelain: #f4f7f7;
                 --white: #ffffff;
                 --transition: all 0.2s ease-in-out;
-                --shadow: 0 2px 8px rgba(0, 44, 62, 0.05);
+                --shadow-md: 0 10px 28px rgba(0, 44, 62, 0.08);
+                --shadow: 0 6px 18px rgba(0, 44, 62, 0.06);
             }
 
             * {
@@ -33,45 +34,45 @@
                 font-family: "Lato", sans-serif;
                 background-color: var(--porcelain);
                 color: var(--daintree);
-                line-height: 1.4;
+                line-height: 1.5;
             }
 
             .dashboard-wrapper {
-                max-width: 1600px;
+                max-width: 1680px;
                 margin: 0 auto;
-                padding: 15px;
+                padding: 22px 24px 28px;
             }
 
             header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 12px;
+                margin-bottom: 18px;
             }
 
             .brand-box h1 {
-                font-size: 1.1rem;
+                font-size: 1.7rem;
                 font-weight: 900;
                 text-transform: uppercase;
                 letter-spacing: -0.2px;
             }
             .brand-box span {
                 color: var(--granny-smith);
-                font-size: 0.75rem;
+                font-size: 1rem;
             }
 
             /* KPI Strip */
             .kpi-strip {
                 display: grid;
                 grid-template-columns: repeat(6, 1fr);
-                gap: 10px;
-                margin-bottom: 12px;
+                gap: 14px;
+                margin-bottom: 18px;
             }
 
             .kpi-card {
                 background: var(--white);
-                padding: 10px 15px;
-                border-radius: 4px;
+                padding: 16px 18px 14px;
+                border-radius: 10px;
                 box-shadow: var(--shadow);
                 border-top: 3px solid var(--granny-smith);
             }
@@ -81,14 +82,14 @@
             }
             .kpi-label {
                 display: block;
-                font-size: 0.6rem;
+                font-size: 0.7rem;
                 text-transform: uppercase;
                 font-weight: 700;
                 color: var(--granny-smith);
                 margin-bottom: 2px;
             }
             .kpi-value {
-                font-size: 1.1rem;
+                font-size: 1.7rem;
                 font-weight: 900;
             }
 
@@ -96,14 +97,14 @@
             .module-nav {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
-                gap: 10px;
+                gap: 14px;
                 margin-bottom: 15px;
             }
 
             .nav-item {
                 background: var(--white);
-                padding: 8px;
-                border-radius: 4px;
+                padding: 16px 14px 14px;
+                border-radius: 10px;
                 cursor: pointer;
                 text-align: center;
                 transition: var(--transition);
@@ -119,10 +120,10 @@
 
             .nav-item b {
                 display: block;
-                font-size: 0.85rem;
+                font-size: 1.02rem;
             }
             .nav-item small {
-                font-size: 0.65rem;
+                font-size: 0.78rem;
                 opacity: 0.8;
             }
             .nav-item[data-mod="summary"].active {
@@ -159,13 +160,13 @@
             .grid-row {
                 display: grid;
                 grid-template-columns: repeat(12, 1fr);
-                gap: 12px;
-                margin-bottom: 12px;
+                gap: 18px;
+                margin-bottom: 18px;
             }
             .card {
                 background: var(--white);
-                padding: 15px;
-                border-radius: 4px;
+                padding: 20px;
+                border-radius: 12px;
                 box-shadow: var(--shadow);
             }
             .col-3 {
@@ -194,13 +195,13 @@
             }
 
             h2 {
-                font-size: 0.75rem;
-                margin-bottom: 12px;
+                font-size: 1rem;
+                margin-bottom: 18px;
                 text-transform: uppercase;
                 letter-spacing: 0.5px;
                 color: var(--daintree);
                 border-left: 3px solid var(--picton-blue);
-                padding-left: 8px;
+                padding-left: 12px;
             }
             .mod-sales h2 {
                 border-left-color: var(--int-orange);
@@ -213,18 +214,18 @@
             table {
                 width: 100%;
                 border-collapse: collapse;
-                font-size: 0.78rem;
+                font-size: 0.92rem;
             }
             th {
                 text-align: left;
-                padding: 8px;
+                padding: 12px 14px;
                 background: var(--porcelain);
                 color: var(--granny-smith);
-                font-size: 0.6rem;
+                font-size: 0.7rem;
                 text-transform: uppercase;
             }
             td {
-                padding: 8px;
+                padding: 12px 14px;
                 border-bottom: 1px solid var(--porcelain);
                 vertical-align: top;
                 word-break: break-word;
@@ -242,7 +243,7 @@
             }
             .bar-bg {
                 background: var(--porcelain);
-                height: 6px;
+                height: 10px;
                 border-radius: 10px;
             }
             .bar-fill {
@@ -254,12 +255,12 @@
             .pipeline-flex {
                 display: flex;
                 justify-content: space-between;
-                gap: 10px;
+                gap: 14px;
             }
             .pipeline-item {
                 flex: 1;
                 min-width: 0;
-                padding: 10px;
+                padding: 16px 12px;
                 background: var(--porcelain);
                 border-radius: 4px;
                 text-align: center;
@@ -267,12 +268,12 @@
             .pipeline-val {
                 display: block;
                 font-weight: 900;
-                font-size: 1.1rem;
+                font-size: 1.7rem;
                 color: var(--daintree);
             }
             .pipeline-lbl {
                 display: block;
-                font-size: 0.55rem;
+                font-size: 0.68rem;
                 color: var(--granny-smith);
                 text-transform: uppercase;
                 margin-top: 2px;
@@ -282,7 +283,7 @@
             }
             .pipeline-sub {
                 display: block;
-                font-size: 0.65rem;
+                font-size: 0.78rem;
                 color: var(--picton-blue);
                 font-weight: 700;
                 white-space: normal;
@@ -294,12 +295,12 @@
 
             /* Marketing Tab */
             .marketing-funnel-card {
-                padding: 14px;
+                padding: 18px;
             }
             .marketing-funnel-header {
                 display: flex;
                 justify-content: space-between;
-                gap: 10px;
+                gap: 14px;
                 align-items: flex-start;
                 margin-bottom: 10px;
                 flex-wrap: wrap;
@@ -308,7 +309,7 @@
                 margin-bottom: 4px;
             }
             .marketing-note {
-                font-size: 0.74rem;
+                font-size: 0.84rem;
                 color: var(--granny-smith);
                 max-width: 520px;
             }
@@ -316,7 +317,7 @@
                 min-width: 150px;
                 border: 1px solid var(--porcelain);
                 border-radius: 4px;
-                padding: 8px 10px;
+                padding: 12px 14px;
                 background: var(--white);
             }
             .hero-metric .kpi-value {
@@ -330,14 +331,14 @@
                 margin: 0 auto 8px;
                 color: var(--white);
                 text-align: center;
-                padding: 14px 18px;
+                padding: 18px 22px;
                 font-weight: 700;
                 line-height: 1.25;
                 box-shadow: var(--shadow);
             }
             .funnel-step .step-title {
                 display: block;
-                font-size: 0.78rem;
+                font-size: 0.92rem;
                 text-transform: uppercase;
                 margin-bottom: 4px;
             }
@@ -423,13 +424,13 @@
             .support-grid {
                 display: grid;
                 grid-template-columns: repeat(5, 1fr);
-                gap: 10px;
+                gap: 14px;
                 margin-top: 12px;
             }
             .support-card {
                 border: 1px solid var(--porcelain);
-                border-radius: 4px;
-                padding: 10px 12px;
+                border-radius: 10px;
+                padding: 14px 16px;
                 background: var(--white);
             }
             .support-card .kpi-value {
@@ -442,7 +443,7 @@
             }
             .content-list {
                 padding-left: 18px;
-                font-size: 0.78rem;
+                font-size: 0.92rem;
                 color: var(--daintree);
                 line-height: 1.6;
             }
@@ -453,7 +454,7 @@
                 display: grid;
                 grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 12px;
-                margin-bottom: 12px;
+                margin-bottom: 18px;
             }
             .compact-funnel-card {
                 padding: 12px;
@@ -476,7 +477,7 @@
                 margin-bottom: 0;
             }
             .compact-funnel .step-meta {
-                font-size: 0.6rem;
+                font-size: 0.7rem;
             }
             .compact-funnel .drop-note {
                 font-size: 0.62rem;
@@ -490,8 +491,8 @@
             }
             .mini-support {
                 border: 1px solid var(--porcelain);
-                border-radius: 4px;
-                padding: 8px 9px;
+                border-radius: 8px;
+                padding: 10px 12px;
                 background: var(--white);
             }
             .mini-support .kpi-label {
@@ -516,6 +517,14 @@
             @media (max-width: 1100px) {
                 .support-grid {
                     grid-template-columns: repeat(3, 1fr);
+                }
+            }
+            @media (max-width: 1024px) {
+                .kpi-strip {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+                .module-nav {
+                    grid-template-columns: repeat(2, 1fr);
                 }
             }
             @media (max-width: 768px) {
@@ -547,6 +556,14 @@
                     grid-template-columns: repeat(4, 1fr);
                 }
             }
+            @media (max-width: 1024px) {
+                .kpi-strip {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+                .module-nav {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
             @media (max-width: 768px) {
                 .support-grid,
                 .grid-row {
@@ -570,7 +587,7 @@
             .status-pill {
                 padding: 2px 6px;
                 border-radius: 10px;
-                font-size: 0.6rem;
+                font-size: 0.7rem;
                 font-weight: 900;
                 text-transform: uppercase;
             }
@@ -608,7 +625,7 @@
                         >176
                         <small
                             style="
-                                font-size: 0.6rem;
+                                font-size: 0.7rem;
                                 color: var(--granny-smith);
                             "
                             >of 214</small
@@ -1691,3 +1708,6 @@
         </script>
     </body>
 </html>
+
+
+
