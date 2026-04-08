@@ -1,0 +1,1693 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Market Access Direct | Executive Growth Dashboard</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --int-orange: #ff5900;
+                --harlequin-green: #25c105;
+                --picton-blue: #3aabef;
+                --daintree: #002c3e;
+                --granny-smith: #819ba2;
+                --porcelain: #f4f7f7;
+                --white: #ffffff;
+                --transition: all 0.2s ease-in-out;
+                --shadow: 0 2px 8px rgba(0, 44, 62, 0.05);
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: "Lato", sans-serif;
+                background-color: var(--porcelain);
+                color: var(--daintree);
+                line-height: 1.4;
+            }
+
+            .dashboard-wrapper {
+                max-width: 1600px;
+                margin: 0 auto;
+                padding: 15px;
+            }
+
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+
+            .brand-box h1 {
+                font-size: 1.1rem;
+                font-weight: 900;
+                text-transform: uppercase;
+                letter-spacing: -0.2px;
+            }
+            .brand-box span {
+                color: var(--granny-smith);
+                font-size: 0.75rem;
+            }
+
+            /* KPI Strip */
+            .kpi-strip {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .kpi-card {
+                background: var(--white);
+                padding: 10px 15px;
+                border-radius: 4px;
+                box-shadow: var(--shadow);
+                border-top: 3px solid var(--granny-smith);
+            }
+
+            .kpi-card.active-metric {
+                border-top-color: var(--picton-blue);
+            }
+            .kpi-label {
+                display: block;
+                font-size: 0.6rem;
+                text-transform: uppercase;
+                font-weight: 700;
+                color: var(--granny-smith);
+                margin-bottom: 2px;
+            }
+            .kpi-value {
+                font-size: 1.1rem;
+                font-weight: 900;
+            }
+
+            /* Navigation */
+            .module-nav {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+            .nav-item {
+                background: var(--white);
+                padding: 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                text-align: center;
+                transition: var(--transition);
+                opacity: 0.7;
+                border: 1px solid transparent;
+            }
+
+            .nav-item.active {
+                opacity: 1;
+                background: var(--daintree);
+                color: var(--white);
+            }
+
+            .nav-item b {
+                display: block;
+                font-size: 0.85rem;
+            }
+            .nav-item small {
+                font-size: 0.65rem;
+                opacity: 0.8;
+            }
+            .nav-item[data-mod="summary"].active {
+                border-bottom: 3px solid var(--picton-blue);
+            }
+            .nav-item[data-mod="sales"].active {
+                border-bottom: 3px solid var(--int-orange);
+            }
+            .nav-item[data-mod="marketing"].active {
+                border-bottom: 3px solid var(--int-orange);
+            }
+            .nav-item[data-mod="partners"].active {
+                border-bottom: 3px solid var(--harlequin-green);
+            }
+
+            /* Modules */
+            .module-content {
+                display: none;
+            }
+            .module-content.active {
+                display: block;
+                animation: fadeIn 0.3s ease;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+
+            /* Layout Grid */
+            .grid-row {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+            .card {
+                background: var(--white);
+                padding: 15px;
+                border-radius: 4px;
+                box-shadow: var(--shadow);
+            }
+            .col-3 {
+                grid-column: span 3;
+            }
+            .col-4 {
+                grid-column: span 4;
+            }
+            .col-5 {
+                grid-column: span 5;
+            }
+            .col-6 {
+                grid-column: span 6;
+            }
+            .col-7 {
+                grid-column: span 7;
+            }
+            .col-8 {
+                grid-column: span 8;
+            }
+            .col-9 {
+                grid-column: span 9;
+            }
+            .col-12 {
+                grid-column: span 12;
+            }
+
+            h2 {
+                font-size: 0.75rem;
+                margin-bottom: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--daintree);
+                border-left: 3px solid var(--picton-blue);
+                padding-left: 8px;
+            }
+            .mod-sales h2 {
+                border-left-color: var(--int-orange);
+            }
+            .mod-partners h2 {
+                border-left-color: var(--harlequin-green);
+            }
+
+            /* Table Styling */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.78rem;
+            }
+            th {
+                text-align: left;
+                padding: 8px;
+                background: var(--porcelain);
+                color: var(--granny-smith);
+                font-size: 0.6rem;
+                text-transform: uppercase;
+            }
+            td {
+                padding: 8px;
+                border-bottom: 1px solid var(--porcelain);
+                vertical-align: top;
+                word-break: break-word;
+            }
+
+            /* Funnel & Bar Visuals */
+            .bar-container {
+                margin-bottom: 8px;
+            }
+            .bar-header {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.75rem;
+                margin-bottom: 2px;
+            }
+            .bar-bg {
+                background: var(--porcelain);
+                height: 6px;
+                border-radius: 10px;
+            }
+            .bar-fill {
+                height: 100%;
+                border-radius: 10px;
+            }
+
+            /* Pipeline Tracker */
+            .pipeline-flex {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+            }
+            .pipeline-item {
+                flex: 1;
+                min-width: 0;
+                padding: 10px;
+                background: var(--porcelain);
+                border-radius: 4px;
+                text-align: center;
+            }
+            .pipeline-val {
+                display: block;
+                font-weight: 900;
+                font-size: 1.1rem;
+                color: var(--daintree);
+            }
+            .pipeline-lbl {
+                display: block;
+                font-size: 0.55rem;
+                color: var(--granny-smith);
+                text-transform: uppercase;
+                margin-top: 2px;
+                white-space: normal;
+                word-break: break-word;
+                line-height: 1.25;
+            }
+            .pipeline-sub {
+                display: block;
+                font-size: 0.65rem;
+                color: var(--picton-blue);
+                font-weight: 700;
+                white-space: normal;
+                line-height: 1.25;
+            }
+            .green-text {
+                color: var(--harlequin-green) !important;
+            }
+
+            /* Marketing Tab */
+            .marketing-funnel-card {
+                padding: 14px;
+            }
+            .marketing-funnel-header {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                align-items: flex-start;
+                margin-bottom: 10px;
+                flex-wrap: wrap;
+            }
+            .marketing-funnel-header h2 {
+                margin-bottom: 4px;
+            }
+            .marketing-note {
+                font-size: 0.74rem;
+                color: var(--granny-smith);
+                max-width: 520px;
+            }
+            .hero-metric {
+                min-width: 150px;
+                border: 1px solid var(--porcelain);
+                border-radius: 4px;
+                padding: 8px 10px;
+                background: var(--white);
+            }
+            .hero-metric .kpi-value {
+                display: block;
+                margin-top: 2px;
+            }
+            .visual-funnel {
+                margin-top: 8px;
+            }
+            .funnel-step {
+                margin: 0 auto 8px;
+                color: var(--white);
+                text-align: center;
+                padding: 14px 18px;
+                font-weight: 700;
+                line-height: 1.25;
+                box-shadow: var(--shadow);
+            }
+            .funnel-step .step-title {
+                display: block;
+                font-size: 0.78rem;
+                text-transform: uppercase;
+                margin-bottom: 4px;
+            }
+            .funnel-step .step-value {
+                display: block;
+                font-size: 1.7rem;
+                font-weight: 900;
+                margin-bottom: 2px;
+            }
+            .funnel-step .step-meta {
+                display: block;
+                font-size: 0.72rem;
+                font-weight: 400;
+                opacity: 0.95;
+            }
+            .funnel-step.top {
+                width: 100%;
+                background: #ff5900;
+            }
+            .funnel-step.second {
+                width: 84%;
+                background: #ff6b1a;
+            }
+            .funnel-step.third {
+                width: 64%;
+                background: #ff7f3a;
+            }
+            .funnel-step.fourth {
+                width: 46%;
+                background: #ff9359;
+            }
+            .funnel-step.bottom {
+                width: 28%;
+                background: #ffac7d;
+            }
+            .funnel-step.ads-top {
+                width: 100%;
+                background: #002c3e;
+            }
+            .funnel-step.ads-second {
+                width: 78%;
+                background: #124b69;
+            }
+            .funnel-step.ads-third {
+                width: 58%;
+                background: #2a79aa;
+            }
+            .funnel-step.ads-fourth {
+                width: 38%;
+                background: #3aabef;
+            }
+            .funnel-step.ads-bottom {
+                width: 24%;
+                background: #25c105;
+            }
+            .funnel-step.org-top {
+                width: 100%;
+                background: #1f5a3f;
+            }
+            .funnel-step.org-second {
+                width: 80%;
+                background: #2f7c56;
+            }
+            .funnel-step.org-third {
+                width: 60%;
+                background: #4f9d74;
+            }
+            .funnel-step.org-fourth {
+                width: 42%;
+                background: #71ba8f;
+            }
+            .funnel-step.org-bottom {
+                width: 28%;
+                background: #99d0b0;
+            }
+            .drop-note {
+                text-align: center;
+                font-size: 0.7rem;
+                color: var(--granny-smith);
+                margin: 2px 0 6px;
+                font-weight: 700;
+            }
+            .support-grid {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 10px;
+                margin-top: 12px;
+            }
+            .support-card {
+                border: 1px solid var(--porcelain);
+                border-radius: 4px;
+                padding: 10px 12px;
+                background: var(--white);
+            }
+            .support-card .kpi-value {
+                display: block;
+                margin: 3px 0;
+            }
+            .support-sub {
+                font-size: 0.72rem;
+                color: var(--granny-smith);
+            }
+            .content-list {
+                padding-left: 18px;
+                font-size: 0.78rem;
+                color: var(--daintree);
+                line-height: 1.6;
+            }
+            .content-list li + li {
+                margin-top: 4px;
+            }
+            .funnel-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+            .compact-funnel-card {
+                padding: 12px;
+            }
+            .compact-funnel-card .hero-metric {
+                min-width: 132px;
+                padding: 7px 9px;
+            }
+            .compact-funnel .funnel-step {
+                padding: 9px 12px;
+                margin-bottom: 5px;
+                box-shadow: none;
+            }
+            .compact-funnel .step-title {
+                font-size: 0.62rem;
+                margin-bottom: 2px;
+            }
+            .compact-funnel .step-value {
+                font-size: 1.15rem;
+                margin-bottom: 0;
+            }
+            .compact-funnel .step-meta {
+                font-size: 0.6rem;
+            }
+            .compact-funnel .drop-note {
+                font-size: 0.62rem;
+                margin: 1px 0 4px;
+            }
+            .mini-support-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 8px;
+                margin-top: 10px;
+            }
+            .mini-support {
+                border: 1px solid var(--porcelain);
+                border-radius: 4px;
+                padding: 8px 9px;
+                background: var(--white);
+            }
+            .mini-support .kpi-label {
+                font-size: 0.58rem;
+            }
+            .mini-support .kpi-value {
+                font-size: 1rem;
+                display: block;
+                margin: 2px 0;
+            }
+            .mini-support .support-sub {
+                font-size: 0.66rem;
+            }
+            @media (max-width: 1200px) {
+                .funnel-grid {
+                    grid-template-columns: 1fr;
+                }
+                .mini-support-grid {
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                }
+            }
+            @media (max-width: 1100px) {
+                .support-grid {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+            }
+            @media (max-width: 768px) {
+                .support-grid,
+                .grid-row,
+                .mini-support-grid {
+                    grid-template-columns: 1fr;
+                }
+                .funnel-step.top,
+                .funnel-step.second,
+                .funnel-step.third,
+                .funnel-step.fourth,
+                .funnel-step.bottom,
+                .funnel-step.ads-top,
+                .funnel-step.ads-second,
+                .funnel-step.ads-third,
+                .funnel-step.ads-fourth,
+                .funnel-step.ads-bottom,
+                .funnel-step.org-top,
+                .funnel-step.org-second,
+                .funnel-step.org-third,
+                .funnel-step.org-fourth,
+                .funnel-step.org-bottom {
+                    width: 100%;
+                }
+            }
+            @media (max-width: 1100px) {
+                .support-grid {
+                    grid-template-columns: repeat(4, 1fr);
+                }
+            }
+            @media (max-width: 768px) {
+                .support-grid,
+                .grid-row {
+                    grid-template-columns: 1fr;
+                }
+                .funnel-step.top,
+                .funnel-step.second,
+                .funnel-step.third,
+                .funnel-step.fourth,
+                .funnel-step.bottom,
+                .funnel-step.ads-top,
+                .funnel-step.ads-second,
+                .funnel-step.ads-third,
+                .funnel-step.ads-fourth,
+                .funnel-step.ads-bottom {
+                    width: 100%;
+                }
+            }
+
+            /* Badges */
+            .status-pill {
+                padding: 2px 6px;
+                border-radius: 10px;
+                font-size: 0.6rem;
+                font-weight: 900;
+                text-transform: uppercase;
+            }
+            .bg-green {
+                background: #e8f5e9;
+                color: var(--harlequin-green);
+            }
+            .bg-blue {
+                background: #e3f2fd;
+                color: var(--picton-blue);
+            }
+            .bg-grey {
+                background: #eeeeee;
+                color: var(--granny-smith);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="dashboard-wrapper">
+            <header>
+                <div class="brand-box">
+                    <h1>Market Access Direct</h1>
+                    <span>Executive Performance Dashboard | Q2 2026</span>
+                </div>
+            </header>
+
+            <div class="kpi-strip">
+                <div class="kpi-card">
+                    <span class="kpi-label">Leads Generated</span
+                    ><span class="kpi-value">38,420</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Meetings Held</span
+                    ><span class="kpi-value"
+                        >176
+                        <small
+                            style="
+                                font-size: 0.6rem;
+                                color: var(--granny-smith);
+                            "
+                            >of 214</small
+                        ></span
+                    >
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Deals Open</span
+                    ><span class="kpi-value">67</span>
+                </div>
+                <div class="kpi-card active-metric">
+                    <span class="kpi-label">Revenue Closed</span
+                    ><span class="kpi-value">$318.5K</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Overall Conv.</span
+                    ><span class="kpi-value">1.73%</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">Blended CAC</span
+                    ><span class="kpi-value">$412</span>
+                </div>
+            </div>
+
+            <nav class="module-nav">
+                <div class="nav-item active" data-mod="summary">
+                    <b>Aggregate Summary</b><small>High Level Rollup</small>
+                </div>
+                <div class="nav-item" data-mod="sales">
+                    <b>Sales Funnel</b><small>Outreach & Campaigns</small>
+                </div>
+                <div class="nav-item" data-mod="partners">
+                    <b>Strategic Partners</b
+                    ><small>Partner Relationships</small>
+                </div>
+                <div class="nav-item" data-mod="marketing">
+                    <b>Marketing</b><small>Email, Ads & Comparison</small>
+                </div>
+            </nav>
+
+            <main id="summary" class="module-content active">
+                <div class="grid-row">
+                    <div class="card col-8">
+                        <h2>Blended Conversion Funnel</h2>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>Lead Universe</span><span>38,420</span>
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 100%;
+                                        background: var(--picton-blue);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>Active Outreach</span
+                                ><span
+                                    >22,180
+                                    <small style="color: var(--picton-blue)"
+                                        >57.7%</small
+                                    ></span
+                                >
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 57.7%;
+                                        background: var(--picton-blue);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>Engaged Contacts</span
+                                ><span
+                                    >4,340
+                                    <small style="color: var(--int-orange)"
+                                        >19.6%</small
+                                    ></span
+                                >
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 19.6%;
+                                        background: var(--int-orange);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>Demos / Trials</span
+                                ><span
+                                    >642
+                                    <small style="color: var(--int-orange)"
+                                        >14.8%</small
+                                    ></span
+                                >
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 14.8%;
+                                        background: var(--int-orange);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>Converted Customers</span
+                                ><span
+                                    >214
+                                    <small style="color: var(--harlequin-green)"
+                                        >33.3%</small
+                                    ></span
+                                >
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 33.3%;
+                                        background: var(--harlequin-green);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card col-4">
+                        <h2>Financial Efficiency Summary</h2>
+                        <div class="grid-row" style="margin-bottom: 10px">
+                            <div class="col-6">
+                                <span class="kpi-label">Total Spend</span
+                                ><span
+                                    class="kpi-value"
+                                    style="color: var(--int-orange)"
+                                    >$41,600</span
+                                >
+                            </div>
+                            <div class="col-6">
+                                <span class="kpi-label">Blended CAC</span
+                                ><span
+                                    class="kpi-value"
+                                    style="color: var(--int-orange)"
+                                    >$412</span
+                                >
+                            </div>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>Events</span><span>$22k (52.9%)</span>
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 52.9%;
+                                        background: var(--int-orange);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>LinkedIn</span><span>$11.4k (27.4%)</span>
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 27.4%;
+                                        background: var(--picton-blue);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card col-12">
+                    <h2>Channel Performance — All Sources</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Channel</th>
+                                <th>Leads</th>
+                                <th>Meetings</th>
+                                <th>Deals</th>
+                                <th>Rev. Closed</th>
+                                <th>Conv. Rate</th>
+                                <th>Spend</th>
+                                <th>Cost/Lead</th>
+                                <th>ROI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Website</b></td>
+                                <td>12,840</td>
+                                <td>48</td>
+                                <td>14</td>
+                                <td>$42,000</td>
+                                <td>0.37%</td>
+                                <td>$8,200</td>
+                                <td>$0.64</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >5.1x</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>LinkedIn</b></td>
+                                <td>9,680</td>
+                                <td>62</td>
+                                <td>18</td>
+                                <td>$67,500</td>
+                                <td>0.64%</td>
+                                <td>$11,400</td>
+                                <td>$1.18</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >5.9x</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Events</b></td>
+                                <td>3,260</td>
+                                <td>44</td>
+                                <td>19</td>
+                                <td>$90,250</td>
+                                <td>1.35%</td>
+                                <td>$22,000</td>
+                                <td>$6.75</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >4.1x</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Strategic Partners</b></td>
+                                <td>12,640</td>
+                                <td>60</td>
+                                <td>16</td>
+                                <td>$118,750</td>
+                                <td>3.47%</td>
+                                <td>$0</td>
+                                <td>$0.00</td>
+                                <td>
+                                    <span class="status-pill bg-blue">∞</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+
+            <main id="sales" class="module-content mod-sales">
+                <div class="grid-row">
+                    <div class="card col-4">
+                        <h2>Cost Through Funnel</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Stage</th>
+                                    <th>Unit Cost</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>List / Data</td>
+                                    <td><b>$4,200</b></td>
+                                    <td>One-time purchase</td>
+                                </tr>
+                                <tr>
+                                    <td>Email Platform</td>
+                                    <td><b>$980/mo</b></td>
+                                    <td>Sending + automation</td>
+                                </tr>
+                                <tr>
+                                    <td>Cost Per Engaged</td>
+                                    <td><b>$1.23</b></td>
+                                    <td>CPE blended</td>
+                                </tr>
+                                <tr>
+                                    <td>Cost Per Demo</td>
+                                    <td><b>$8.28</b></td>
+                                    <td>Per free trial</td>
+                                </tr>
+                                <tr>
+                                    <td>Cost Per Buyer</td>
+                                    <td><b>$55.80</b></td>
+                                    <td>Email channel only</td>
+                                </tr>
+                                <tr>
+                                    <td>Revenue / Buyer</td>
+                                    <td><b>$974</b></td>
+                                    <td>Avg LTV Y1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card col-8 marketing-funnel-card">
+                        <div class="marketing-funnel-header">
+                            <div>
+                                <h2>Visual Conversion Flow</h2>
+                                <div class="marketing-note">
+                                    Restored sales funnel view for outbound
+                                    performance.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-funnel compact-funnel">
+                            <div class="funnel-step top">
+                                <span class="step-title">Prospect Universe</span
+                                ><span class="step-value">38,420</span>
+                            </div>
+                            <div class="funnel-step second">
+                                <span class="step-title">Emails Sent</span
+                                ><span class="step-value">22,180</span>
+                            </div>
+                            <div class="funnel-step third">
+                                <span class="step-title">Engaged</span
+                                ><span class="step-value">4,340</span>
+                            </div>
+                            <div class="funnel-step fourth">
+                                <span class="step-title">Demo / Trial</span
+                                ><span class="step-value">642</span>
+                            </div>
+                            <div class="funnel-step bottom">
+                                <span class="step-title">Converted</span
+                                ><span class="step-value">214</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card col-12">
+                    <h2>
+                        Campaign Performance
+                        <span
+                            class="status-pill bg-green"
+                            style="margin-left: 10px"
+                            >Q2 Active</span
+                        >
+                    </h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Campaign</th>
+                                <th>Audience</th>
+                                <th>Emails Sent</th>
+                                <th>Click Rate</th>
+                                <th>Trial Signups</th>
+                                <th>Conversions</th>
+                                <th>Revenue</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Q2 Independent Agents</b></td>
+                                <td>IA / Small Agency</td>
+                                <td>8,400</td>
+                                <td>24.1%</td>
+                                <td>298</td>
+                                <td>98</td>
+                                <td>$92,050</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >Active</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Agency Growth Series</b></td>
+                                <td>Mid-Market Agency</td>
+                                <td>5,200</td>
+                                <td>19.8%</td>
+                                <td>184</td>
+                                <td>64</td>
+                                <td>$68,800</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >Active</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Reactivation — Lapsed</b></td>
+                                <td>Prior Contacts</td>
+                                <td>3,100</td>
+                                <td>18.4%</td>
+                                <td>94</td>
+                                <td>28</td>
+                                <td>$28,700</td>
+                                <td>
+                                    <span class="status-pill bg-blue"
+                                        >Running</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Event Follow-Up</b></td>
+                                <td>Event Attendees</td>
+                                <td>1,540</td>
+                                <td>31.2%</td>
+                                <td>40</td>
+                                <td>15</td>
+                                <td>$10,200</td>
+                                <td>
+                                    <span class="status-pill bg-grey"
+                                        >Complete</span
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+
+            <main id="marketing" class="module-content mod-sales">
+                <div class="funnel-grid">
+                    <div class="card compact-funnel-card">
+                        <div class="marketing-funnel-header">
+                            <div>
+                                <h2>Email Funnel</h2>
+                                <div class="marketing-note">
+                                    Top funnel to 100k emails sent, then opens,
+                                    clicks, and converted demo.
+                                </div>
+                            </div>
+                            <div class="hero-metric">
+                                <span class="kpi-label">Demo Yield</span>
+                                <span
+                                    class="kpi-value"
+                                    style="color: var(--int-orange)"
+                                    >1.25%</span
+                                >
+                            </div>
+                        </div>
+                        <div class="visual-funnel compact-funnel">
+                            <div class="funnel-step top">
+                                <span class="step-title">Top Funnel</span
+                                ><span class="step-value">140,000</span>
+                            </div>
+                            <div class="drop-note">28.6% drop</div>
+                            <div class="funnel-step second">
+                                <span class="step-title">Emails Sent</span
+                                ><span class="step-value">100,000</span>
+                            </div>
+                            <div class="drop-note">68.0% drop</div>
+                            <div class="funnel-step third">
+                                <span class="step-title">Opens</span
+                                ><span class="step-value">32,000</span>
+                            </div>
+                            <div class="drop-note">73.4% drop</div>
+                            <div class="funnel-step fourth">
+                                <span class="step-title">Clicks</span
+                                ><span class="step-value">8,500</span>
+                            </div>
+                            <div class="drop-note">85.3% drop</div>
+                            <div class="funnel-step bottom">
+                                <span class="step-title">Converted Demo</span
+                                ><span class="step-value">1,250</span>
+                            </div>
+                        </div>
+                        <div class="mini-support-grid">
+                            <div class="mini-support">
+                                <span class="kpi-label">Open Rate</span
+                                ><span
+                                    class="kpi-value"
+                                    style="color: var(--int-orange)"
+                                    >32.0%</span
+                                ><span class="support-sub">32k opens</span>
+                            </div>
+                            <div class="mini-support">
+                                <span class="kpi-label">CTR</span
+                                ><span
+                                    class="kpi-value"
+                                    style="color: var(--int-orange)"
+                                    >8.5%</span
+                                ><span class="support-sub">8.5k clicks</span>
+                            </div>
+                            <div class="mini-support">
+                                <span class="kpi-label">Revenue</span
+                                ><span class="kpi-value green-text"
+                                    >$199,750</span
+                                ><span class="support-sub">closed</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card compact-funnel-card">
+                        <div class="marketing-funnel-header">
+                            <div>
+                                <h2>Ads Funnel</h2>
+                                <div class="marketing-note">
+                                    Paid media funnel from impressions through
+                                    converted customer.
+                                </div>
+                            </div>
+                            <div class="hero-metric">
+                                <span class="kpi-label">Customer Yield</span>
+                                <span
+                                    class="kpi-value"
+                                    style="color: var(--picton-blue)"
+                                    >0.02%</span
+                                >
+                            </div>
+                        </div>
+                        <div class="visual-funnel compact-funnel">
+                            <div class="funnel-step ads-top">
+                                <span class="step-title">Impressions</span
+                                ><span class="step-value">1,200,000</span>
+                            </div>
+                            <div class="drop-note">97.0% drop</div>
+                            <div class="funnel-step ads-second">
+                                <span class="step-title">Click & Engage</span
+                                ><span class="step-value">36,000</span>
+                            </div>
+                            <div class="drop-note">48.6% drop</div>
+                            <div class="funnel-step ads-third">
+                                <span class="step-title">Landing Visits</span
+                                ><span class="step-value">18,500</span>
+                            </div>
+                            <div class="drop-note">88.6% drop</div>
+                            <div class="funnel-step ads-fourth">
+                                <span class="step-title">Trial / Demo</span
+                                ><span class="step-value">2,100</span>
+                            </div>
+                            <div class="drop-note">87.6% drop</div>
+                            <div class="funnel-step ads-bottom">
+                                <span class="step-title">Converted</span
+                                ><span class="step-value">260</span>
+                            </div>
+                        </div>
+                        <div class="mini-support-grid">
+                            <div class="mini-support">
+                                <span class="kpi-label">CTR</span
+                                ><span
+                                    class="kpi-value"
+                                    style="color: var(--picton-blue)"
+                                    >3.0%</span
+                                ><span class="support-sub">engaged</span>
+                            </div>
+                            <div class="mini-support">
+                                <span class="kpi-label">Spend</span
+                                ><span
+                                    class="kpi-value"
+                                    style="color: var(--int-orange)"
+                                    >$148,000</span
+                                ><span class="support-sub">paid media</span>
+                            </div>
+                            <div class="mini-support">
+                                <span class="kpi-label">CAC</span
+                                ><span
+                                    class="kpi-value"
+                                    style="color: var(--int-orange)"
+                                    >$569</span
+                                ><span class="support-sub">per customer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card compact-funnel-card">
+                        <div class="marketing-funnel-header">
+                            <div>
+                                <h2>Organic Funnel</h2>
+                                <div class="marketing-note">
+                                    Organic pipeline from search and content
+                                    reach to qualified opportunity.
+                                </div>
+                            </div>
+                            <div class="hero-metric">
+                                <span class="kpi-label">Opportunity Yield</span>
+                                <span class="kpi-value green-text">0.08%</span>
+                            </div>
+                        </div>
+                        <div class="visual-funnel compact-funnel">
+                            <div class="funnel-step org-top">
+                                <span class="step-title">Organic Reach</span
+                                ><span class="step-value">420,000</span>
+                            </div>
+                            <div class="drop-note">86.2% drop</div>
+                            <div class="funnel-step org-second">
+                                <span class="step-title">Website Visits</span
+                                ><span class="step-value">58,000</span>
+                            </div>
+                            <div class="drop-note">71.6% drop</div>
+                            <div class="funnel-step org-third">
+                                <span class="step-title">Qualified Leads</span
+                                ><span class="step-value">16,500</span>
+                            </div>
+                            <div class="drop-note">85.2% drop</div>
+                            <div class="funnel-step org-fourth">
+                                <span class="step-title">Meetings Booked</span
+                                ><span class="step-value">2,450</span>
+                            </div>
+                            <div class="drop-note">86.1% drop</div>
+                            <div class="funnel-step org-bottom">
+                                <span class="step-title"
+                                    >Qualified Opportunity</span
+                                ><span class="step-value">340</span>
+                            </div>
+                        </div>
+                        <div class="mini-support-grid">
+                            <div class="mini-support">
+                                <span class="kpi-label">Lead Rate</span
+                                ><span class="kpi-value green-text">28.4%</span
+                                ><span class="support-sub"
+                                    >visits to leads</span
+                                >
+                            </div>
+                            <div class="mini-support">
+                                <span class="kpi-label">Meetings</span
+                                ><span
+                                    class="kpi-value"
+                                    style="color: var(--picton-blue)"
+                                    >2,450</span
+                                ><span class="support-sub">booked</span>
+                            </div>
+                            <div class="mini-support">
+                                <span class="kpi-label">Spend</span
+                                ><span class="kpi-value green-text">$8,200</span
+                                ><span class="support-sub">SEO + content</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card col-12">
+                    <h2>Overall Marketing</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Motion</th>
+                                <th>Audience / Outreach</th>
+                                <th>Leads Generated</th>
+                                <th>Conversion Rate</th>
+                                <th>Meetings</th>
+                                <th>Deals Active</th>
+                                <th>Revenue Closed</th>
+                                <th>Spend</th>
+                                <th>CAC</th>
+                                <th>ROI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Email</b></td>
+                                <td>100,000 sent</td>
+                                <td>8,500</td>
+                                <td>1.25%</td>
+                                <td>51</td>
+                                <td>24</td>
+                                <td>$199,750</td>
+                                <td>$11,760</td>
+                                <td>$55.80</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >16.0x</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Ads</b></td>
+                                <td>1,200,000 impressions</td>
+                                <td>36,000</td>
+                                <td>0.72%</td>
+                                <td>64</td>
+                                <td>31</td>
+                                <td>$312,000</td>
+                                <td>$148,000</td>
+                                <td>$569</td>
+                                <td>
+                                    <span class="status-pill bg-blue"
+                                        >2.1x</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Organic</b></td>
+                                <td>58,000 visits</td>
+                                <td>16,500</td>
+                                <td>0.81%</td>
+                                <td>34</td>
+                                <td>12</td>
+                                <td>$54,600</td>
+                                <td>$8,200</td>
+                                <td>$241</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >6.7x</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Website</b></td>
+                                <td>12,840 visits</td>
+                                <td>12,840</td>
+                                <td>0.37%</td>
+                                <td>48</td>
+                                <td>14</td>
+                                <td>$42,000</td>
+                                <td>$8,200</td>
+                                <td>$586</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >5.1x</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>LinkedIn</b></td>
+                                <td>9,680 outreach</td>
+                                <td>9,680</td>
+                                <td>0.64%</td>
+                                <td>62</td>
+                                <td>18</td>
+                                <td>$67,500</td>
+                                <td>$11,400</td>
+                                <td>$633</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >5.9x</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Events</b></td>
+                                <td>3,260 audience</td>
+                                <td>3,260</td>
+                                <td>1.35%</td>
+                                <td>44</td>
+                                <td>19</td>
+                                <td>$90,250</td>
+                                <td>$22,000</td>
+                                <td>$1,158</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >4.1x</span
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+
+            <main id="partners" class="module-content mod-partners">
+                <div class="card col-12" style="margin-bottom: 12px">
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 10px;
+                        "
+                    >
+                        <h2>Partner Pipeline — Deal Stages</h2>
+                        <span class="status-pill bg-green"
+                            >42 Targeted Partners</span
+                        >
+                    </div>
+                    <div class="pipeline-flex">
+                        <div class="pipeline-item">
+                            <span class="pipeline-val">42</span
+                            ><span class="pipeline-lbl">Target List</span>
+                        </div>
+                        <div class="pipeline-item">
+                            <span class="pipeline-val">28</span
+                            ><span class="pipeline-lbl">Discovery</span
+                            ><span class="pipeline-sub">66.7%</span>
+                        </div>
+                        <div class="pipeline-item">
+                            <span class="pipeline-val">18</span
+                            ><span class="pipeline-lbl">Scheduled</span
+                            ><span class="pipeline-sub">64.3%</span>
+                        </div>
+                        <div class="pipeline-item">
+                            <span class="pipeline-val">11</span
+                            ><span class="pipeline-lbl">Active Conv</span
+                            ><span class="pipeline-sub">61.1%</span>
+                        </div>
+                        <div class="pipeline-item">
+                            <span class="pipeline-val">5</span
+                            ><span class="pipeline-lbl">Negotiation</span
+                            ><span class="pipeline-sub">45.5%</span>
+                        </div>
+                        <div class="pipeline-item">
+                            <span class="pipeline-val green-text">14</span
+                            ><span class="pipeline-lbl">Deals Won</span
+                            ><span class="pipeline-sub green-text">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-row">
+                    <div class="card col-7">
+                        <h2>Conversion by Account Owner</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Owner</th>
+                                    <th>Mtgs</th>
+                                    <th>Active</th>
+                                    <th>Deals</th>
+                                    <th>Conv. %</th>
+                                    <th>Rev.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>David R.</b></td>
+                                    <td>7</td>
+                                    <td>5</td>
+                                    <td>5</td>
+                                    <td>71.4%</td>
+                                    <td>$52,400</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Sarah M.</b></td>
+                                    <td>5</td>
+                                    <td>3</td>
+                                    <td>4</td>
+                                    <td>80.0%</td>
+                                    <td>$38,200</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Jason K.</b></td>
+                                    <td>4</td>
+                                    <td>2</td>
+                                    <td>3</td>
+                                    <td>75.0%</td>
+                                    <td>$22,150</td>
+                                </tr>
+                                <tr>
+                                    <td><b>Tyler B.</b></td>
+                                    <td>2</td>
+                                    <td>1</td>
+                                    <td>2</td>
+                                    <td>50.0%</td>
+                                    <td>$6,000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h2
+                            style="
+                                margin-top: 20px;
+                                border-left-color: var(--int-orange);
+                            "
+                        >
+                            Stall Risk — No Movement
+                        </h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Partner</th>
+                                    <th>Stage</th>
+                                    <th>Idle</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>NW Agents Co-op</td>
+                                    <td>
+                                        <span class="status-pill bg-blue"
+                                            >Active Conv</span
+                                        >
+                                    </td>
+                                    <td>32 Days</td>
+                                    <td>Follow up needed</td>
+                                </tr>
+                                <tr>
+                                    <td>Gulf States IA</td>
+                                    <td>
+                                        <span class="status-pill bg-grey"
+                                            >Discovery</span
+                                        >
+                                    </td>
+                                    <td>28 Days</td>
+                                    <td>Re-engage or Drop</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card col-5">
+                        <h2>Partner Channel Economics</h2>
+                        <div class="grid-row">
+                            <div class="col-6">
+                                <span class="kpi-label"
+                                    >Avg Leads / Partner</span
+                                ><span class="kpi-value green-text">903</span>
+                            </div>
+                            <div class="col-6">
+                                <span class="kpi-label">Avg Rev / Partner</span
+                                ><span class="kpi-value green-text"
+                                    >$8,482</span
+                                >
+                            </div>
+                        </div>
+                        <hr
+                            style="
+                                border: none;
+                                border-top: 1px solid var(--porcelain);
+                                margin: 10px 0;
+                            "
+                        />
+                        <span class="kpi-label">CAC Comparison</span>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>Strategic Partners</span
+                                ><span class="green-text">$0 CAC</span>
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 2%;
+                                        background: var(--harlequin-green);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>LinkedIn</span><span>$633 CAC</span>
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 54%;
+                                        background: var(--picton-blue);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-header">
+                                <span>Events</span><span>$1,158 CAC</span>
+                            </div>
+                            <div class="bar-bg">
+                                <div
+                                    class="bar-fill"
+                                    style="
+                                        width: 100%;
+                                        background: var(--int-orange);
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card col-12">
+                    <h2>All Partner Accounts</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Partner Name</th>
+                                <th>Owner</th>
+                                <th>Stage</th>
+                                <th>Leads</th>
+                                <th>Meetings</th>
+                                <th>Deals</th>
+                                <th>Revenue</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Alliance IA Group</b></td>
+                                <td>David R.</td>
+                                <td>Active Partner</td>
+                                <td>2,140</td>
+                                <td>14</td>
+                                <td>6</td>
+                                <td>$28,500</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >Active</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Patriot FMO</b></td>
+                                <td>Sarah M.</td>
+                                <td>Active Partner</td>
+                                <td>1,880</td>
+                                <td>11</td>
+                                <td>5</td>
+                                <td>$23,750</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >Active</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Premier IA Group</b></td>
+                                <td>David R.</td>
+                                <td>Active Partner</td>
+                                <td>1,620</td>
+                                <td>9</td>
+                                <td>3</td>
+                                <td>$14,250</td>
+                                <td>
+                                    <span class="status-pill bg-green"
+                                        >Active</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>TexasBroker Network</b></td>
+                                <td>Sarah M.</td>
+                                <td>Negotiation</td>
+                                <td>980</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>--</td>
+                                <td>
+                                    <span class="status-pill bg-blue"
+                                        >Negotiating</span
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+
+        <script>
+            document.querySelectorAll(".nav-item").forEach((item) => {
+                item.addEventListener("click", () => {
+                    document
+                        .querySelectorAll(".nav-item")
+                        .forEach((i) => i.classList.remove("active"));
+                    document
+                        .querySelectorAll(".module-content")
+                        .forEach((m) => m.classList.remove("active"));
+                    item.classList.add("active");
+                    const target = document.getElementById(item.dataset.mod);
+                    if (target) {
+                        target.classList.add("active");
+                    }
+                });
+            });
+
+            document.querySelectorAll(".subtab-btn").forEach((button) => {
+                button.addEventListener("click", () => {
+                    const container = button.closest(".module-content");
+                    container
+                        .querySelectorAll(".subtab-btn")
+                        .forEach((btn) => btn.classList.remove("active"));
+                    container
+                        .querySelectorAll(".subtab-panel")
+                        .forEach((panel) => panel.classList.remove("active"));
+                    button.classList.add("active");
+                    container
+                        .querySelector(`#${button.dataset.subtab}`)
+                        .classList.add("active");
+                });
+            });
+        </script>
+    </body>
+</html>
