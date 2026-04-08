@@ -1,1713 +1,790 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Market Access Direct | Executive Growth Dashboard</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap"
-            rel="stylesheet"
-        />
-        <style>
-            :root {
-                --int-orange: #ff5900;
-                --harlequin-green: #25c105;
-                --picton-blue: #3aabef;
-                --daintree: #002c3e;
-                --granny-smith: #819ba2;
-                --porcelain: #f4f7f7;
-                --white: #ffffff;
-                --transition: all 0.2s ease-in-out;
-                --shadow-md: 0 10px 28px rgba(0, 44, 62, 0.08);
-                --shadow: 0 6px 18px rgba(0, 44, 62, 0.06);
-            }
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Access — Sales & Marketing KPI Dashboard | Eprenz</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F05000;--navy:#002535;--blue:#20A0E0;--green:#20C000;--red:#C0392B;
+  --bg:#F4F7FA;--white:#FFFFFF;--border:#E2E8F0;--border2:#C8D4E0;
+  --surface2:#EEF2F7;--text:#0D1F2D;--sub:#5A6B7E;--dim:#99AABB;
+  --shadow:0 1px 4px rgba(0,30,60,.08);--shadow-md:0 4px 18px rgba(0,30,60,.11);--radius:10px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
+/* topbar */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;gap:16px;box-shadow:0 1px 6px rgba(0,30,60,.06);position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.logo-img{height:30px;width:auto;mix-blend-mode:multiply}
+.divider{width:1px;height:28px;background:var(--border)}
+.company-pill{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:7px}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(32,192,0,.2);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.period-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:11.5px;font-weight:700;color:var(--navy)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.updated-tag{font-size:11px;font-family:'DM Mono',monospace;color:var(--dim)}
 
-            body {
-                font-family: "Lato", sans-serif;
-                background-color: var(--porcelain);
-                color: var(--daintree);
-                line-height: 1.5;
-            }
+/* tabs */
+.tabnav{background:var(--white);border-bottom:1px solid var(--border);display:flex;padding:0 28px;overflow-x:auto;gap:2px}
+.tab{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:13px 18px 12px;border:none;background:none;cursor:pointer;color:var(--sub);white-space:nowrap;border-bottom:2.5px solid transparent;transition:color .15s}
+.tab:hover{color:var(--navy)}
+.tab.active{color:var(--orange);border-bottom-color:var(--orange)}
 
-            .dashboard-wrapper {
-                max-width: 1680px;
-                margin: 0 auto;
-                padding: 22px 24px 28px;
-            }
+/* content */
+.content{padding:22px 28px 56px;max-width:1400px;margin:0 auto}
+.panel{display:none}
+.panel.active{display:block;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.section-lbl{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--sub);margin-bottom:14px;margin-top:24px}
+.section-lbl:first-child{margin-top:0}
 
-            header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 18px;
-            }
+/* kpi cards */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px;margin-bottom:16px}
+.kpi{background:var(--white);border-radius:var(--radius);padding:18px 20px 16px;box-shadow:var(--shadow);border-top:3px solid transparent;transition:box-shadow .2s,transform .2s}
+.kpi:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.kpi.or{border-top-color:var(--orange)}.kpi.nv{border-top-color:var(--navy)}
+.kpi.bl{border-top-color:var(--blue)}.kpi.gr{border-top-color:var(--green)}.kpi.rd{border-top-color:var(--red)}
+.kpi-lbl{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--sub);margin-bottom:9px}
+.kpi-val{font-size:26px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:5px;font-variant-numeric:tabular-nums}
+.kpi.or .kpi-val{color:var(--orange)}.kpi.nv .kpi-val{color:var(--navy)}
+.kpi.bl .kpi-val{color:var(--blue)}.kpi.gr .kpi-val{color:var(--green)}.kpi.rd .kpi-val{color:var(--red)}
+.kpi-sub{font-size:11.5px;color:var(--sub)}
+.kpi-badge{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:12px;margin-top:6px}
+.kpi-badge.up{color:#177E40;background:rgba(23,126,64,.10)}
+.kpi-badge.down{color:var(--red);background:rgba(192,57,43,.10)}
+.kpi-badge.neu{color:var(--sub);background:var(--surface2)}
 
-            .brand-box h1 {
-                font-size: 1.7rem;
-                font-weight: 900;
-                text-transform: uppercase;
-                letter-spacing: -0.2px;
-            }
-            .brand-box span {
-                color: var(--granny-smith);
-                font-size: 1rem;
-            }
+/* grids */
+.grid2{display:grid;grid-template-columns:3fr 2fr;gap:13px;margin-bottom:13px}
+.grid-eq{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;margin-bottom:13px}
 
-            /* KPI Strip */
-            .kpi-strip {
-                display: grid;
-                grid-template-columns: repeat(6, 1fr);
-                gap: 14px;
-                margin-bottom: 18px;
-            }
+/* cards */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px 16px;box-shadow:var(--shadow);transition:box-shadow .2s}
+.card:hover{box-shadow:var(--shadow-md)}
+.card.full{grid-column:1/-1}
+.card-title{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:2px}
+.card-sub{font-size:11.5px;color:var(--sub);margin-bottom:16px}
 
-            .kpi-card {
-                background: var(--white);
-                padding: 16px 18px 14px;
-                border-radius: 10px;
-                box-shadow: var(--shadow);
-                border-top: 3px solid var(--granny-smith);
-            }
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.tbl th{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sub);padding:9px 13px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--text);font-variant-numeric:tabular-nums;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td{background:rgba(0,37,53,.02)}
+.tbl .num{text-align:right;font-family:'DM Mono',monospace;font-size:12px}
+.tbl .pos{color:#177E40;font-weight:600}.tbl .neg{color:var(--red);font-weight:600}
+.tbl .total td{font-weight:700;background:rgba(0,37,53,.03);border-top:2px solid var(--border2)}
+.tbl .section td{background:var(--surface2);font-weight:700;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--sub)}
 
-            .kpi-card.active-metric {
-                border-top-color: var(--picton-blue);
-            }
-            .kpi-label {
-                display: block;
-                font-size: 0.7rem;
-                text-transform: uppercase;
-                font-weight: 700;
-                color: var(--granny-smith);
-                margin-bottom: 2px;
-            }
-            .kpi-value {
-                font-size: 1.7rem;
-                font-weight: 900;
-            }
+/* status pills */
+.pill{display:inline-block;padding:2px 9px;border-radius:12px;font-size:10.5px;font-weight:700}
+.pill.green{background:rgba(32,192,0,.1);color:#177E40}
+.pill.red{background:rgba(192,57,43,.1);color:var(--red)}
+.pill.blue{background:rgba(32,160,224,.12);color:var(--blue)}
+.pill.orange{background:rgba(240,80,0,.1);color:var(--orange)}
 
-            /* Navigation */
-            .module-nav {
-                display: grid;
-                grid-template-columns: repeat(4, 1fr);
-                gap: 14px;
-                margin-bottom: 15px;
-            }
+/* funnel */
+.funnel-stage{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+.funnel-lbl{font-size:11.5px;font-weight:600;color:var(--text);width:180px;flex-shrink:0}
+.funnel-bar-wrap{flex:1;position:relative;height:26px}
+.funnel-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;min-width:28px;transition:width 1s ease}
+.funnel-val{font-size:11px;font-weight:700;color:#fff;white-space:nowrap;font-family:'DM Mono',monospace}
+.funnel-pct{font-size:10.5px;color:var(--sub);width:60px;flex-shrink:0;text-align:right;font-weight:600}
 
-            .nav-item {
-                background: var(--white);
-                padding: 16px 14px 14px;
-                border-radius: 10px;
-                cursor: pointer;
-                text-align: center;
-                transition: var(--transition);
-                opacity: 0.7;
-                border: 1px solid transparent;
-            }
+/* progress bar */
+.prog-wrap{display:flex;align-items:center;gap:8px}
+.prog{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;min-width:50px}
+.prog-fill{height:100%;border-radius:3px}
 
-            .nav-item.active {
-                opacity: 1;
-                background: var(--daintree);
-                color: var(--white);
-            }
+/* sparkline */
+.spark{display:inline-flex;gap:2px;align-items:flex-end;height:28px;vertical-align:bottom}
+.spark-b{border-radius:2px 2px 0 0;background:var(--blue);opacity:.5;min-height:3px;width:6px;transition:opacity .2s}
+.spark-b:last-child{opacity:1}
 
-            .nav-item b {
-                display: block;
-                font-size: 1.02rem;
-            }
-            .nav-item small {
-                font-size: 0.78rem;
-                opacity: 0.8;
-            }
-            .nav-item[data-mod="summary"].active {
-                border-bottom: 3px solid var(--picton-blue);
-            }
-            .nav-item[data-mod="sales"].active {
-                border-bottom: 3px solid var(--int-orange);
-            }
-            .nav-item[data-mod="marketing"].active {
-                border-bottom: 3px solid var(--int-orange);
-            }
-            .nav-item[data-mod="partners"].active {
-                border-bottom: 3px solid var(--harlequin-green);
-            }
+@media(max-width:900px){
+  .grid2,.grid-eq,.grid3{grid-template-columns:1fr}
+  .card.full{grid-column:1}
+  .content,.topbar,.tabnav{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
 
-            /* Modules */
-            .module-content {
-                display: none;
-            }
-            .module-content.active {
-                display: block;
-                animation: fadeIn 0.3s ease;
-            }
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <img class="logo-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAVYAAABmCAYAAACQormaAACCbElEQVR4nOz9e7Bk133fi31+a+1H9+nuMzM4AxIzfMxQj4EsAbJFyJJA2SIsWZBvibRzBd1ywJtErPgWlKqQf0RyJRFdiaVKRFaqTJXqklWJkBuHdBziVllkckXI14RlCdCDkCONLQmwRA4lcYaPGUKYM4/Tfbp7773W+uWPtfbu3X3ODAZvSJ7fVE+f02f33uv5W7/f9/cSbtNtuk236XUmoUQBTAMCYEE9EgLDLZjXgCkgO36G+fVzd7F/4gi8fxsePm249+0FXF/CF4BL8P6r8MlZAU0JuoSJgaqCWkaAodApBRAogZyGioYGCiAHajA5aAVaADvcx/fx+6PvA46BUdjOM2Z/5rj+GR7lKh9jl2ftMmPEOHbhNt2m23SbXhcSQMGSEQAVlxhrBgoiDlXAput8xl3W33PM6wf/0YMnHrn31Js5nil3iOIp+NpS+IOvPsevPfMVfv8b3HsZnjUj8PvxWbUOyQYD/PIqFjDkWCw1NeQBr/HRaHplcNf92/rNf/ftFHcL82N7TLlKVVXYJmfLjdmp7uLPf+1rfPlXLk+4wiz35jZjvU236Ta9TtTjPoXGXx3gBVADYoBAOTBUlWMc4M3wE2dKPvFT/+XbeEu+YISQNQ2ZOvK8pCiPsPCWC1eu8IfXGv7Zb+59+Dnhn+wpBCyKYG2Gk2V8sDNkxuK0IRtY3MLH9owNtQZO/MhE3/a372LyHSVX7WX2wh5SBEwuGGOwCqPlmOJrYy7/3h5/8i+fFxaRN9+m23SbbtPrQ2JAA0InlEbJlQBqsOWAajlnu4TRklN3Gz7xf/qffztv5xuM/HUKyZEcQuMIzQxbX2Vkco6NLHcdO87zSz70f/3/7T3ljHliLxiEBhdcfJixYANBHCio81gMgUDtA7ydn/nO93wbe2++zNftJaY6I88sVgzON3iFhYOxzNnZUU7/7bewf32uX/kf9yfmdR3U23SbbtN/vqQGiC9hTYBNPwd81SAacdJteN8//q/exluWX+e4nWFmnul8yV61xAdHbsEOAhQV1swZN1/nH9x7ku8Z87kiBBCDZumRasBkIEoQBQXfgMGiicufefddH94/eo294S6LwYxsG4ajkkwM6sAKlAOQccG1fM7e9oIzP/TX4ASfuM1Yb9Ntuk2vD3WcNABRWm3Se//PQwMl8O5v5cNvHQTelNWEqzWlge0BjHMoJUEJDoKLt9w2njubv+Af/sBbMDAGj7SMNRiootqPgsFgMUhmYAAc4Z5v+t63M5M9Qt4gBqoF7E/n+MZTSsEWWwykYO9qhRaBWbbH3tY1+Js8dJux3qbbdJteJwogK6bqATUGJEMxGAKFGAhw15Bf+qYTR9jSmnq+xBy5gyUWcx2yGS1vJgC1A2qQBsr5Fb7r9JgS7gVH5iFXkNY4lbh3FnIsOY4qegbcxS/ZHbC5oWSLrWbEOFhG+YBRPqRsStgDe124czAkt8q1+jma7euUZyLvvk236TbdptePEnNTALHxlT4O2lAC0wWfPrFzjK3MIKrMF4GsOAr5VuTIS6Lly4zI8gkYAw7GA7DNdd56lF/JiN5ceUgQq5hOPDbkZBSEQOSKx3jXdXcNseCXDl85rFisNTjnUKeUZkAeMqwXNHjKLUtTLMiP3mast+k23aY3JEXs1RD5poUdgmIlqvq5EYJz0PiIl2aAFeogLF0SRfP4xWVVMSw4jkZcVAMYHKrRaFVkZXpS4rIj7mNBZTKBDJw47MAgOUwXc5a6IBtZvGnIyxznHHVdY4yhqipUbzPW23SbbtPrTYmfCYD6+OpwV9tir+ezwRZXr+8x2C5heQ1xMxgImscvqxWyHMQ0eO/BwZVrMDjyFp67zMeUKAwn1CAyvwC+CUCgII9/vMZZrvPJ3OWEEFiEffbCgjqrybZBBrCvM2bMuLx/jcF4RJ4VaGU5eeTt7P/JbcZ6m27TbXq9KRmeLCAhgDqEgGJoMDigyDhz9tkvEIphFEZLJRfPdbNkfxvqAcyWgcV8RpFV2G1gy+LGx/izK3Al8FE1hrkHJ8lFloAgqCqOCi+Oggwq4Dk++NyfXGG5qCmPDcjugKnAvgNnoRl6wrZi7oAr9R7GDpHFgPkFgWduM9bbdJtu0+tKYU1itb2/eIQsy2mA645P/v4XFT32Nq4vA+wDJZQlMb7UwGgLjo0gz4ElfGPq4c138z88/cdUcKHItwDICqg0GctUsVZo8Cx0gSDkamBO/eyvXeTO7M3IvmV+BUyAUSE0FcxmIAKSWULtyRc5O+FO9v54H/6M995mrLfpNt2m14/00B/RJPM516BimANfdTz0r373S+yOTjEdGnwF+Ryyq4qdgwkG9mHxDWgqOHLXt/DbX9nj1/48fDQAvqrJFTKyKFJmrAxnEnA4QBjacZRa/wj5wq/+GYOvT/im/K3c0YzIZ1scM0d482DMKEyQ656jYcyb/XHu2DvCF/8fl76bfZ64HdJ6m27TbXp9aCOkFZIfq0AETqPpKrOeXJVhDGn9+Z/8/jd96L3fsc1bshm6d52SAL6icWCybWS4zTU1fKkZ8HOfPcd/uM5kAbMKyBiwwKHWRc+BBkQUldiAPGQoisejQ+AO7vmm/8kdz5x+11uZltdY6JzhZIDHs7835dj2EWTPwvmcp3/xz+4Wz65eYfc2Y71Nt+k2vX4k0ac0eq2amITFGNASNDAaCsv5kiAwyqK71DF48H/2Xduf+3v33sVddo8dFtjlgsZb3B1v53I+5tee/WN++XcX/PECqWOiLBzg7ATvFVhi8BhMZKJClGCjHYscQ2YLFm4JJeTfwW98+w+/44G7vvM4OvIEp9iQcf3SHn/8m19k79cRaij2M0ZMXoEkLP076A2v4tAnCSsT3aGXmzUQuL1Ub/Slw25yoE0m3Sm+CwY99H3lP3yz9xv27bCxOPTLbyy62YJYa3Lqwy1f/yKeefMhWp+3GzbglifvlaEX96h2VR/S/pu061Y36w1v0W9UuvBFPP7G9EqIZ5r0cusBA2qjXxQNgxKWdWzcZHQcP7vMHXDfOwy//wN/DU4fhVPHjlCFjN+7sMtv/xn86ZIHZsJTixzqJgYF5FaY+gFkJdbNEByC4NDY75juCgIUUoILZBR4KqrCwRAYcYYdfgah4DI/h+MiFTMqyJcFOQWW4mUOibBqyebnm3Fp7c+ycU1gbTaTRI7FYHoxxNq73BN6t189e43RqbkhY5UeYzUp6cLB9z77JX26yZYTFrQRmvfCG9f0/h5ujS/f6CJZjdmLJd24r/T87w7bcKH/nTbd28bm7DelOwg3N3SP+s/sfy/Ow2G0mjffRu4ctt5ulbG+TAbbPu7gell/b0lp4+OBfvtXF6xTZ9hZFzJW3Tw4SuvP633hEMYa58901622442Zfn+IDwT5v1Tqz1/LV/SQFaDx85IYIBWzqXLKwnGFqoZzdeSlOCK0AKsEL77LTeD6s3CwLyHynjyNphfwhhXz7a+fyJSwCi1w+woMSZsgK8nQHD7O2meo0GW1udlCsmkxrXhwSIMTukGQsPHV7uEb21XN2uNvZrU7jLEeJlrHpmbppqH79k1J2ye3ktfN7t2jF5gp0TjG/fcXIm2bkX55KYxVdN2S29+gB/ryIhjrwU/Ngd98d5DdogZzGL2GjHWdqbYD6G6wYdZ/lvS9g+s23PC3A+N+yKTa3r3X5/gwpnbILTYZ9mv53jXisN18+JrYPFvatdtnuvGiyM8kftK9h9719O7TjZ2sf/4SySAd+1tJj+35t35z6R5Od1WbIGwlgXa9aFvbP7U2uWIcjYMn6GHUY6x9Zg0Hp2A1d+HAHB6kLN13nbHeiHEH1hnr4S148Yz1Jau6h0hL7Ri1tJrVm6muLySr3VoT1m65RusjehMh+Jafe+NnvRharavYnnCTqbgBY32ptHYywqGa4wt832IOMgc4yFg3pNXNp77QwfJqvd90z9+gz93QE6Xedo48BsXg+z3bHIc1wRAkBNrosI4pyyvCWA39fNmbAy+9azfbl/hiUu11taPNBsPZVNv6K8FvLN4bMtb29usYXV821RsxhJuNkmbpvrcosW4w1ptLw7fYBogHh4RD3l+gHQc2UH/pHkIHJJlNzeAF2nlga/RU+Ztxy0MZ+MFDYEVh7acbQT4vj7H2GWXvaYeOu9l4bzvr1n7rfjmMDh2X3vOVm0vvHSOOI3LYAbpqw60x1lcCBXip1PKPl9wIjWJRCy5p731FG8xVSEzVdIJfG8wQ/x7fX2ai64BK6HH4fqM3VW9/iMBp0CTJrjFV0+vIBvgjIV5rdO3jg9dv0GrsN9XvdnP1GOMLTdQhEuHLUEbX6IYbffNQ6ajFeNcntnt/wQceonJ39ztkHjav33zOC4if0tMZusXYH/MXZCq9eepJbAfHf9Wu/oY5uIFeiZlr9T+9gVp6GK1rdWtqZv9w6Y/HYT9r2Him6d/+kFYe1JjW1dvDGWqfDvbwVvv8StNN5u5W1CCJUVhra/gAlmI6WM30PnuhFrz8CgL9BbDW+CQFps886ziF6V2z3sQNKbXlnIEOzzO957yYbfGKTn/X377U8wKSrrbXrBa1vOyNbTakud77Dbl0OHhtS2tMOn2m6xLsOnpwE+n2hmL3KyTnJCwsLpEbze4KP1yBVJtSyStIm11spUjdXOcHpb92VQg95nqYBH8Avmnvv8lkD/9K/1kHBJOb0I0UidcTClhryOa43BwvWkmffd7VahuHSOirn0P6P9AatVsIaPN7L5m69bN2p56K1PtDZKy60cCoEPv20pb7th1Nqn40xrX3XSnfHp829+EM6jBMqP18HfNlZb3e/PKhdAuQwQudmnrIZy+GBNBs41A7bBwO9zyIFMf0gAoo6V79BdpDa/pQzq0fWYddF1bP2qQbSBk3pcMk+sOoP14veQ42oYDN9bB+7xe72Q5AA4edSzfhjIc/b5013RCjPKBpHH4XfbGdeqUprc/WaLv5+c0ZbJ9PRR5yGLR02I56oRX/6te86m361UZcfWwJnQeDVwgb3K7PUNtutyAzibW+FGrXTZ89Sq+dndTQb+xhE3fYwrrZCXkY436pG7uTVjb/sNo4N2rKYYtHO0Ya1vt3CFNdZyf9pbe5cW8oY6z3Y2NsbmGv3/zitZ5ttuuFbnir1DdubuBwG3SjA77lizddRnpjuOswr4r+vQ/7dK29L5ExruOxL+0erwjpat92+1dW+3fz/XBaAVSW9W3Zrhi/fnnkUxzEmm8Ze86yDOdWlktjDCEkNbbHWLTVYdbE6iRmZ4l/9+4TE9EqY5MTvOtcZ/pqtSFD0+YM9GB+Y3oIQsOhblu32MEbyFBJaBYUPWzfd2RNnLC1RdyXvMPG59p7cfCmIrHFeuNVsH59956+t3HDFzpZ130YQ/elwx7fbuI+g7XYlfGR3tiJQXWFv99wE96AmXbqsRhU4yyoxDUXdOPQO9ipg7Qx3gZBRPCH+UreIgmQ9TZZYNU+oC0yutafTeTM9X9hfYPGZRT/uKncbF7XR85a6ssonWR6M9W4u/CQvh6yLkWkCwV9XUhjftXNE6S/f4XDTdLxd4PJSrxzCL4T8vpz5FlVNgi9tZIZ8D7OtyoUJrKhYUEnhNwyGZPwqjS4InFxhhDWGUH/rtKbdmPASGKECmoRL9jelzLJCL18jCuVM23SVrxt4QK3jols0qFCYe9Dk5hnO/B2g0HdaNsddjK1C7nPRFpcvB0e6akuAMYaVGPqsvZ1q3SY2nLYNUEiLh02Ztv09EBNEE1IzKuvVmlvh65jTYcJ8YJPI3BgPGB91fakjfZ+/Uv61GcSYkza6AENilE6aLHjnwnXaaUVkeSzmKS/vr7zUllDy1hVV/wqSK+dshI4Nn2EO8a6MYDtr61/5SbQIO2/xOhM+k7oRn2Dmdo4l6oQNg/57qL1Nqz18bCDvs+gX0dptSuvskG3AkxFpmlQsSCKSCDXgO3JaApkZcF+5eJGNinMoC2qZQwEEyfLuZhrm4P74saN6DHQzS4IefdbBhgjoJ6gXaDY2gYTa9BUMRFr48rOMpAM6rrrkRFDmWc09YIWZveAHmCsvIAFqzXESFRx+4YZpRMv4q8Bg419TafTjeJ/2oHbxFI8kvj8OmM+TGXopPBN7sSNx3xzwiyHM4ZNyeVGEncrubVS4dqz0ikMK0Zrul9M+j3KBUZWh65PusUBaanfid5BcyN1CsDakhACXkPC080aU7BEOGntWd1dwto9Wz5gETIsQYS5Ni8RTGrvtXqukbicW4l1zVbQk0j7ZqwDGKWatfsWEleYRwka2Jylg0snHJj7tQtvpDFsMtT2vdVQuzHvGXsk3BSKeLWpb7RsDwBgTd06eFiH7vMaE0VPAXAxeiqsxj5KqxmQg8nBZOl0SkeyJMkpN1AvKHLYsoHFfnNrjNUYc0CaipvRYswAUYNqjeCwuDVNeJjF6gmNtpJnzxq5WunxhyCx8RhwPp3gmtDViA0FWdvXLyhyiNjYbgHEJolZV4PS+Li711brysDWF9cOYwAmKWuBVQCET1f2WXb8Kd7HdgpewG3qDX0Jrge7dE27QT9bRt2uL22bfuAL64wJBRFN85mc2zfGcxU1J3EMVXob0sa5EXoLWuM9jSGEhpvRjaK9Vqqb6daNmAw1kkQ0haA9eEJ6zHUlyhR5Ad6hIa6hPtPyBBpeKkq/zlghSavdmPfGeW1SIGbI792kf+rpyr90BQPEEWrXGOnQVZFomEg3kuQus1LPQ5KuetTngtp7bfSrf8n6h0nrhITJrAw+r7VXgMfEPSyGNYxI2iaHbk2uur06bD0GtSYKXBogQKYtlAWNZjDYBi1OELKTmOwEIgWqNbhLlMUZmjCltDs0+09QTS8R5kjQG+7TA9SeCCLSMVrvFSRPnyuZcWQhIIFOLO6pNkUFtSfOi2N1sqtA0zLMjmtlGGISWSFgCQdE7A7/OLTFSaKyOSH4thP9ozjeLSQmq+mOConbxFu4dhOsSz8rirHB647Fpqcmmcg9Wr1QNW6sloNpAKPrKlerW/bH/9A+pvGjtzf7G6DfFlLfW4kj9Wl1cEg6UMKaii4msqOo0iZ4v13MQOdKkSSYuFHD6ufuuGlF35sfDqv+bvibCgfnT5MqtuIt6b199uqZEMjEYrVFzgNKoOGlBwkckD7bdmFWbW3Hu11ja9bZjbEhXZ/6LwiIEDocqbeu2rWlNwooTq/2dJX4rHj+rcNnL7S2IqVntwdb26ZgDhG7XyMSVmMCvcam9bxme1n5r6/WmUEli/xFXe9AgyWWYIaQTU5hx+/lbd/8sW/5gR/knd/7fQy3xyyXcwSYXrnGr/6//wX8yX/8IOPsBLtf+SfF+EUkYTHGdBJUK0VZYCs1Jo+vUwXcfQR+4s4J7zuyBVsFjMeACNf2lOv7sGxgb8bnr8MnA0wdXHRwqbGcXwj1wvciKtSkUzz6jG1a7fp1yDdaHN9slpgnYPN01GnbqRVjEAE8+HZBslo8a4yi/3wTDxYxUZLLsvjKizNi7Y5YMwleKyTMQArU7+LDFNdcomnAVYCDsCEz9S0grD9zkxRWUrhuMPQsWzkQdwy2x74kRONfyxg1ndwiPak1OcjFdOmxr8UQysF95OkEBwhaC2GqvjlPXV+gWkZpqTtM4rj2F28riR7ex3QwmjythZZBELEua4kFjgZnVl9JbVG/Gz8IU+bzWff8jqEINvE+52teAEu6KcXhTvpUy1QzCyS1sZWmYDWvnUThwKQaT91a6x2IpL5KwhTERGuNsdFqikC5dQ9qJrG7fpegFcFdwrua0CTBwKUuruYhPkEOwD/9gyJ9I02MTQJCe6GJe8v1v/V6kKR9rCtNwLbj7Fb7uDM8rWw38d0iKBmhg/UqwEkJdrsgO/rIqf/yfR975w/+KNkddzL3wn69xKtjVAzIA2ybwPSrX+RXfv5//zGq3Y/QzC69IGNtmWkrqXq/2gonSk7dUfHTd1s++G2n4e7TRzh1/Ah3DC1jGyi1oV7uMxoMyWxOrUoIOWpzKg/Xa+VLl2f8wZcv8Yd/Cl/1fOoaPDqDp+ZAY8BrkpJoJZMoG0g6kW8sbbSSQ1qU5YDBaHyKzB6vXZgGtLLWHg9BK9UwFQUxWluk8K6+EJYLaOrVM/vW4/ahxsDwKBTFCbLyXgbFmbwY3EeWnTDGTNRIKSY7AWFqRErVMBXvLnrfXFDvL2feXWp2/+LjLOe4pqcyS5RX+vDLYRO1kuRs2piJeVqLHY7IB+Up77RWMZOAFFGDN5N0YE0Qd9EQpqHav8CyimbO0Pa3N44ikJdQbo3NcPguMxw9aIviDFl+2lq74/G7ErS2qhXqd91y8XS9v/+ELhZnWcwjg9E4bzbBOodizGuTmeaPpDkUJZQDbFmcyYbD+/OiOGOKwX21NxMvibEYreNt4nxCmOYCvmnO14v5kzqfP8Wi2sXV8XDVANqsz+1LopVKKoMh+XDrlJj8dBP8blApMXYnXiUFQWtVrQhhZkL9Rb+4PjOh6hmW+oxV4n0NMBzCcOuMGZb32KK4WzK7o6Y4o6Y4A2YiChLX1yXxfle8u2hCc37/6vVP4utdqgZcQwsoWAQj0Giz9tQ+dVK4kXRoJ8aa5+TDAdlgeGrhTNkdrq8TibE7qlrj3UUjZpJZKV21PBsW+9A4VgcKvXdWh3TwiEIef4x5r8wYxm965J0//t/80rd83w8hO2/ja9crQjFkeOQIznvqakEWAgM/54i/zvxrX+B//MjPvJ+w/0QL4yRJopUJoUNDzQq2KImZvoew85Yxv/ydd5oHHv6eb+FNZp+jpWFsHaWbk/kFmY9lEMjirYKLa9kYgyQcdWFL9rIxy/IIjQy5cGXGb/+nL/LUH8NX4X178Ng1wElbQ6Gn9qX2HZo2sKO04E2GmRw7NT567IPZYHi/1zAN6i5Za3dQM2mC31XVylopcyuFa+pz+9euPeqne+eoq3XpFXrqmKV8yzf9vM+Lu7MiP22y4gzGTryGqvFaBw3TdtGJxE1vRGujYaqqdR785S3XXKhm1z+xv3f9aV0uExNi7YS9IVONq+pgn7eGjI/e+XA53n44YCYqZtL3CIhaoN1BwjQTv7vc33tsee3aoyzmK5e4ztRtoNzCjrcfLCeTh7LB1ruDkdJrxM0xUrgQpoQwy4wURZaftvjdsJw/SVU9s/+1r/7CJmNth1BbTw/ZaD89yGG0RTYY3jfY2nq3LQf3mczueDGToFp7MROHGa8YqxQQZqpaxdvGn3NrJhlmYghTv6zPLReLz+v+/CkW+2ep5j2NIaxDGhtNO4g3th+mdZaXFEeO3bc1OfqI5MWZhrjpRaQQkTI+QisJWocANtTnrn713I+Lr9DQyvA9hiqG7OixM1LEwyQblPeS5ad9glbrAEp2ArHHDYIRxRCmBL9rgt81IUyH1u645eLp5d7ep6rZ7CmWi25txb1zkLEeMAS2UAYGjMVubbF17NiPlZMj718qNJKdbL1OXsz7YcOZWjA98BGtcmkmSJiiZiKEKT5MrY2MVUOYWjETK1rV+/tPzGfXP6nXru1GiG9DOGppkBK2hmjHcp6o2U7uup+7vuXz7/vp/zNu8hau6IilDJDBmFm1pGqWbG+PyVVo9p5nxy45Gvb4yu//Or/1z/9vHxLyyKllCdFWuk2DR1hiraMST9AoMx4LcEr5nb//7bzrH/z1U9xZgqjDUlHqgqFfUISetJMYkJN2MxuMgtXQRfktB5bKZfhFhpiCYpTz9bnn8T/c5dNf4PIX4c6rQFEYqjrENtoMp1VcSL4FstcVui7/ohjIhlBsnxqd+ubz0YjmL2c0F+LiKc6ozSZe3dSH6hkrYI3WYT77bDOdfpor1y6gLRabpIdBidk5+vBocuwDweenI/OC9l2RlZHtAFgapqJx4Rii1pKhtTbN+fl07zGu7j4a1egokRuNEMial0F7bwXIQT1GQkIDosq+9bYz/20YjN/rTX462u39VAhTQ5gGzCRIdjI2pzk/tKDL/Sem57/8k+Q2SurBR9V/uIU5tvNT5faxD3oxY+/9roiUViCglZKdVGMn3vupzc2EoJUJzflCtF5eu/yz/hvf+AyhhTtC8naw6eyIfbTWIibDOR+lb8lgOBrbyfb7traPPhLEjEMrbcMBtzGVOJ5xvM3k4PaJ32s3c5TuzMTiLi6uPPdBrl7+DKk6KJmNBZOCj9p272ZrVvzkMtHZPSUDk2N23vTgaOdN/6wKUqjNTqqsM5IexDIpQ/1FO7v8c/Mrzz/WLJcrzJAMhkPKO+78+Xy49YAXKVXMOGAmmtYYxMPShINrTSVM23UmPsyKzO4UIoWbz5+cX73+SaZ7T0TjcIMRh/omiVORqUeDajKPJzQjloOKSjPjI4xOvOWXQ16cqcTuhCTMbqatfKF3SGkLlQ2DaZgegCRkNb+kNWwIU/XukjHZCTATI9nJpmnO5wJ5cBdnF89/P4tZ1ErCSkDRtq8GMLGfeZ3aUWRU5JAdPfVD/+TD50ff9N1M7TEqtnEyiPK+UbypMQSoAjvDIWHvEkelYlTt8i9+/v9Aho3SckHEXKJjh+KIav/AQu5hDPf84DfzzH/zd76Db80bhs99iaNZyTLx0YwlWQ8Qp9+JHn5u2lMjwWWy8GyXHlNq3NDzhjPlFv/w+97KO7/n6PFHf+NZffKrnHRNuDQewvWFw0gOQQm6aTxoLaorVbObGmMmztiIySrHQWtR8GomKoYgxQThXmfioiQv76VwlzCzC/jEVIscu739Y3Yyfq8Oy3uXxu6g2UlR6TacYjY2/sY217g5EqKLU6iMIc+yE9kIHGbM9OrHmc1rguvMG33mepirq9VkrtDoSO/F7njJTjhTpuGuJwLYEDemk7SVjJxeeHe5tMUZ8jwywJAkp60RcuTYB+zW5KHG5qedxnE0Fqz63eD8rhgziTZQKQIWlVCqmInid1WjlB4nRZMtJa6umMc2aiDea2LkFkYT8vH2w3Zr/B7y8t7K5KdDj5GsEl5G/9X2kOpwxvZ5rBhx+6HvYc3Rk0VOmtH2+yjKe8P+3mPs7Z2LIouAWFT9IdLUQerOOIEgZuyMmTjsTrC2e35InGPFQCxCdnJ7OHowZNcei3lZTVT5B4P7zGj74Wwyeaj26fCKcE7sV9JSOl9ohUAgtNZ67ATMRE2YqsBS/W7t3CWb56cHd9zxU9VgcJ9e2/sUy+mFEIX7tHdaA2wPS03vEVBrPRTsTiA/7aQ4E5IkrmkUXuy7R5AEMayk2DDtr/H2cAIz6S99L7F/cb1lJ42xBOF0tGdqheQngEvoypDe7ifF0GHuDZ13iQvJXrLzpo9O3vQWFqakljK5XQlWNXpApXGz+YClczhvGI1GLLTmyPc8QBatfIopSkLdAPsgGWqUILDl4G5Y/i/vz8sH7v5mdDqjKBxH77yDaneXQU5rD4iSqW1VuXQYBMg6wDzExWfAJY6YCymZlYuGMQ+OitFwybduLfnf/Z1v4Qe+8vzFX3zy+k9fXvALFqgcGDsghIZY9isNFG0qwHU3mISRTlfAymp/atBKlDKpOxErErtjsuJMOdS6UvtYdHMosOPth4fbR37CjAb3LQw0zu9uauLaxtpvGiHS57LiwKkpCiEQxJRFObx/aO2OM7Dw+gss9tGQfBel/a6uGWVv3fx4OIk1uMbvlpndYWt8H9evnkUMDAZsHT36iBltP+yy8t5aBUKoECkxFpQdlTDVzhylpaoiITkHqdbB+924krVzZIdkO+x4QJawJgOjEcMjRx8pt48+4k12og5SBCCq+rLmNSKaGKXYCdjJWphTNxe9fnYS4zp0VA623l0MB/c1eXFmrvwc0+vnokoAQQS5UcBGy9QOPPXWSTETzYb3ezu8B+OeJStg++gj5dboQcnLe9QWp0Pw0yDx8FolmjG9/oX0s1nBGN0fzQQDNO6iqhTG2J1iYMa5tcenqhXUv8ByCRKiJKptPYL0nMR4OuRLpRMaEqMrV4no2pG49XeVGFXZ7pnQSbJmIoeta13PzK/YiYjuYMwkNsgAzVTUTIzIC2C/qS0JdgtAkY9ZNkA2LOydpx4alEdYhhzbwlOqWGqMVhAqvBgqyVmqYMstdFCyV1W86e7vIsNZ7NaI5fVpdGmSgFdHOczJZvA3j6E/9cPfxN+aWOTyRYrREep6zpXrV7njGNBqMALBGLwUtF5cwSgmOFoXntWIGFQMogajinMNgUBeQHSygmp5jXyxx3ccu5PyzZa3PvyOj/7sY19+70XD+54Pi0velxTFiKaepVv3Y1XCxmIPgNbSsVyTJMcVidEEA0rhFAprd0w+uA9roRjdU2yN31uMhverLe5eOq0bIwXG7txg290iGYy1BO/jy0hJlp+2W+P3Fo27VFv5NLO9GtXoItPzt01aGuj60L4oEoOKoEgpNjtpyq13B7l2FpNRbB95Tz7cendjzMSLVkF1Eg+nrFQET1Zi5G7UdK5i8TBJMk8AXGudp2MLEZaQZGtLeOJgSDbZvr/Y2npAyuH9VYBGtfYihZrIVNNN0nM6tZA0l+kPPcvvLVYVkCw/XjfLXZPnpyfH3/zfVoPi4/WV3cdxy7ROfcdc+trXSx/0FUU3Q7vDcPxeMBOGowfL7clDJivONEFrV/upGDtZ5fps+wxtvl2ld2hsNiviU4jJTsb1EqZL53eNajUYjR40g+zk/OL8H6MQfKsgJ0+BPgZ6w76Gyqgp2WD4t/ruO/cx0+HaSa7v9cukw/CgLUE0oGKPtxkb+hGh6UCv234cFLbSYKnBSKwiWDUOKMBuPYAp0ZAhmmHUpPZEt0+rAcQniTDgMQwHJYu6oQlQqyHDZfjpAozFa0AHhqwODGYN37eDfuhHv4273ZTB3gKkguVfUBaO8kgEerO21RKday0Bb6LkphJwdmWsEE1t0Yy8ieVtJXgy40gFv6EJiIcj1nCkzJld+TpvLwrebHN+4b962wM/+a+++v665CPXq5ACtRKa2rq64NAuWXPLixRwlyIoLhMQgpiJ0TBtjQoSkqKtWhO0dmomYqTk6B0fyMrBfcPB6EEyu1Njyho/xdhJBOGSJ227+DoxqWd9hN7mX79MU7SDasCr0gCZtTt2PHpwmJvJolo82kaXaWcAiuNpkZfs3N5SQMHaHbXZhCw7CRlsT+4fjo8+4o3daRS8SolYsOY4GlNBekAkIwSwmtSnzhlbClGtcEli7W3M6GXSMimJhoLR6EyxfeT9Wbn17gqtaw8qUmDz43QGnR71JLXIYHqMfYOh3oQpECRCMS5ImWF3tsr89NAc+4Cq1s3VK09E5ipplDa9Ql6uJ0E0S9amOG4nRx8Jo+2Hs7y8V/IMh+I1lBAq7dZ1S30mm5qzVp9ofaxEAyLZRI2iXiv1UiJmkufFmbws7rZ3HP+0333+6ehcD2IsMf8GGCuR4XbPMv1nTlfY7mE+BbdASmQI/XtsHp66gm6gBxeoIZjIRGPyIFnBjUDndtYZQw/zIAqJLwVKKVm2DFyk8Nf2GJRb7HWSMCn/hcFLrJwCkGUGTQEoi/3rHCmE+fVdsjzE6J9yNGG5uEZYBo4qfM8R9H/z4Nv4a/mCo/NrUFUgyS+sjuq8tI5ffZULh1U6lTw2qMVX06VSIxJAM7BlvC91qk8L2sQBF79gXALa4J97jm+/6y4+8EPFhz/67+pnjkyGxVem/jMx+qJF2JP0Ir4fgEELQxjCVNRO2r0exEys6QetmhJhJ4Lj4DGT7NjOz9gADXZHMWUwBmPzSegHKmuYgpl0Is0BJns4KWaV60BswpLCxBlOS661MWbCePI55rML1EtigTMB9axkw5dJqmDNxGMhH9zHcOvM4MixD1CU9zbO76oxE8ROyFLEVQjgdYW3iaAm1Rfui0xBa5zbxaaNSqd1tcsZrCV705t/gnL4LmeLM16lbMRM1NodRMq4U1YLe8XQ+hpQWJNYpYOdDol+2ZiPGF2jZIPBaZyr9uv6XCFmMtw+9gFVrdzl559q4av22S8Tedl4vqFRgXx42pioTznfhoLbGM/bT9Rw4AbhwN/apnYQqdjodx78VIyZmCI7LqJ4H6b7rnm23D7y/vli8TTNfudUvOpuhELatRa6/RWmoFUUVEypt6gdHGg+3KBvSZJN89qFrW70k7ZNvfsYkYLgp3h3CX9jsWMVBZl+N60PuwNXPcPVy59v6vm7TD5AcATJCRKjtYQsagui0RXVOzLjKXLP0UzY/8afkw2pGQyPjv9iv57l+YhBM+VbDV/+P/7oCb73DkfY3cWWFiSPrjgl0e6gEesc9A6r/gCbkE6XvsTSgjUW1DpUHTQeoy7lDAAGIEPi7xXoPogo2ye3qP11fuzUmOt3X/ns//2Lez8ysiV7vpdCu92EPYnVQMpgpNHQkcySmtSFyBR0FfaKKREpUa0cUOTFSe985bzWeEqMrLaXawvBtQaU9UmXNbghrC2StVNeBBGDRkkFRQqMGRvsTra9/T6n/mM09WyFn63u8LK10iQtND5gy60HwvjIT9jB+L11CNNg7I6Y7EToQN2+HtyTXnq3a8cx+Wr2eh+d+Twa5ykrYDw5sXXkjp+uxEy8gseMwR7vopRUYyBA+5AD6qnHhtATS5P/qvTcdZJRKx5aZhLn3nS3BMVjEUvpXVMYyU5mWXayGE4ectv1OfauX1odlFFg6LH6l81ovZKc/Yl+xG2kVD8bCL0uHmCkvYt6lexEe5Xn4sE9UTGoTXFnyoRgd4pieL+Mtx/WZXiMRYUPIcEBhhBcr3/tamsfEWYGd8kZKRV6RsIXQ2lPRpV8sjr3NrS99PwoDMW/r8vIJn2moFobcRc1+F18Q3/fbQKEkLLTBXChxhrwUoExF1jufuQ/PP3rn737b/8XiOSoyWhMThBDoASx0SvABQpRMm24oxCunv9PzJ95mmxgGc8W12bD8s5Cqqv1N8Ev//R7Tp3+G9v7hK9fJiuhnkO+tY1sZXBtGvtxBEybAEVjeVhnDI0paCQnkOMp8ZIRLY4BxGG1AlMhNGQBCi0YmQIJ8cQMSyAjhiNbEDPALZZky4Zm3nDyGPzX97+F3zn/9c/9flWVBdT1WiqU9QXQTVRSEZJxOg52p47rCihu84CJlgi4oGQ2KyWzparSEMA33SFhQnSyb63TfXcaCFPt/EiTJbSrRxWvyrIiRbN5NETfsSCmFMlOqoV8a/KQWyzPYhdPoDXxLpaXHuF+CIWAN0JZljTD8XvVFJOqXk6zojjtUPB+ig8FRsr2jJc0gEqI+LSH9F8VxzSkiCeXGC0E6YEYwyFbx+746WXQ2hszVmOPi8Tg5Sgi9dT7nnN3DD+MG1IIU6thajTM2ufKBp8JJFelxGAD0VLfJXNRJTSxjflwdLfVQFVXF8ny06Ojx392fzr7yTRItMYOwysjuUYIUSKMAnG9YxCjSAh4V1/MJPpt3iw7X+ffiZm0pVpC1IwJIcQQdGMjQ3WrzEwyGNzbaH0+H00equfNeZb10ygYibi57xKObMARqrXVMFX8riAFhJfEWEUhC9G1auWqGL0/okdH6MEBLYOMqnuQEA/IduyIrFdwFyX4XdHm/GGh4QfaYKITjNMkj2mTPpw+/oUnPn3xnd///Sd9MClD2JBaSpCUD1pjusAtFbLlAmvn/Okf/C5c+MJ7syueWQZotVe/HfeB93371kM/dFdJce0CNodFgGyUwtkaDwPAxpPWGpAUEZgdHbJfZVyzx/h6U/Jv/+gCf/z8Ff50lycv1/xsgNkIHnxLyYe/5U6471tPcN873sybij2cv0Ye5pSZkgH7+zA6EpNdFTRkwyFUgdHWGL83Y3u0zz/6kbs4/yvf+Kcm4xeec24XWySst2foWDugogFr9XscmKC9JBXaAjvppRCa+rIOhseVQFNXl1Gt7aA8iTWEenl5S7Q2PsxCCNMQwtQoGGMmGFuLNRPn3UXJi7u9GKoQUK8VNvlAhZB8GhJWZJKKEV2rJoqZGLQeHbvjp/bn+0/gPfimk7bNxrn9ksgYMAZ1vlpqU5rB4N5l01SSRR/MdvEpUiKyCin2ARc8klmCr+L6qOsvYqQsh9mJepkkhtaqntIjIsBwi/HO8X+qxfB+THZCjT0emXRSOsNqI5vMEJoArppaI0VhTWnRyjf1uaaaP1lPr34MV12grulUP2uhGECWn8rH4/fmw60Hsnzr3ZXXKqgHK5OYyDM9z8aONi7OhxUzyfLijMnszvDEyZ9aXPr6LyAWvMdam1RGXsHjLS1U71B8lauUQphm6nczCVPVMMOHKck3SkTKuMakqBp3sSiLu42NPwdvJmKZRPw9+QwrKaMcK+EBRb3SKORZcWZr+8j751evPo0xuFCTmRXDChqSSTmuFxEzDvXybDnITljvLgXM7KX02irk3l8mxOhAtXbHEabR19xMNMtOthDMOorTaSiIydHGQfCVESnLTMp6tnh6ceX5D3WwUe9bmwdi5eKHhohyIYBPQUGXvvSWf/epR/X73/swx97+bZy/8hzk22TjI1S1wwRl4BpyP2eE48/+6D/wpX/9+KP45nzmynjWH6Pibxw3H/v73/U2ssvn4rleQ54TU8A6h6k9isWrT64ukI2iH+zl/cAlX/L//e2v8PiX+dwufGRPeGpqLD7lziwknP1GxUf++Guc+M2vXXrk5G9c+tl/+LeO8u4zd/LW4RbLvefIrDI6JjT7DcWWEOYeYzR5EQjWWMYE3jHxvOskH/rXF3l0IOwufQVkMfSyNknde3HYz8rZe/WZKcvjztXgwzTL7PHcRgvicn//i7q/99js+tWP490uPqyYiAiYrCAzk/zIsQ/YsrzXDLbenRt73FlT+ha3s7aXnajfEJI0aCYqUngJU7ZGDzLffwIjeN/6V25Ger8EatttTInpYIpSNEo6oh5FqxCa3RCif6Fgd3KTn8yzaPCMcfLgMykztFLnLgVfPdMic21/Yp8LGG7d4/LijBq7EyQ72VfPOxeYVoWrAzY0ZMZOchOqUC3OzqfTT4f5/En84mmWe+m87LnzBKBZgjEXmnrx8aYYfNqMjj5SjCYPmWx4byOG4PuMJknFQsyNK2biMROjIPngPiTrXDB8iBV+7aHGkJdAosSYdg8apoVIkam7aILfVV+fc4vlWVdXz/jF8iz18hK1Y+VlD2wfuafOijP5cPQj5WD0oJR20njBB00yQivZtc9jNVbx57Fid7DNebIiBkdAZ2GPCIxNTCm2VavlbHmdT9TN8myo/S68xJDWANZrnVm745DCB63JshNma+sBKbcekCAFRsp1f2RQCdN4NJgJPo5dLlJm+MuhXp6t9/ceo1rUaBvO2n5z03ukheZC8nFOQ+uBUEGA5379s/Kby7l+73/xEG8/dTd77irT3atsZyO2yoKBLhjJgt/6t5/lT//Vv/gQbvZZCsii/uG5Q/mpH33nUd56ZJ/MaTyKUzo/aTzGBQSLmBwxgoijzoWvLpT8Taf43T+/wqd+4zL/cZ/3X4FP7gO1DmOOQxwFSpHU8D24dA1+7hL83KXfufbzX97d+9Aj3/k2JkvYetMW+24GFeSaDBCmoUtZR0EW4MTY8sB3jXjy4v4DIedxV/tdR4tVthPQQoOmGzTZWFz9KJDeaHckogTvLoqGaa52x3hXL/ann9a9vceYz5+O+QSUtUQqAhhb08hu4/3PNVtb7869383Gowet5KdDwuow0dDWGV/axd9BBToJqoUxZjIYTR5aXr3yRFQX4mbpsh69ZAqx3QKIRcRCiK5dqjEXbFMvPp9nUBozMZkU+DBT35wX53cRuxNwl8T5y1mWnSxEiuDdJd/U53xVPbMKr7Ep3bqF0eREsX30kSYr7w0mMtW+mtmfCyEg3lW5SFlIqKSunl1ev/6JcGX344Q6qm2dEhKSshLS+ZYwymWAZXUp1O7nGmMm5Tg/HTSbhP4h2Nt48SgICGbiBbKiuJujx97D1cuPUxRQLSOTkfWM8i+FInMI4N0UwrS0ZpKruxSa5dlmsfh8qKtnm+tXnsA7VmHBiSnaLK6fa9eeReTZZrR42u6YcWntjsFMXOpPzzEv0oG1HnNaGJudlMHgjLr6XGyV72CrXnHneK96AVrNwsI83eUDfSmkBh8Unxd0iVKygpDnp4uB1oEwU2zZYeY9gSfN8VTUT4wqmfjLxjcXqv29T/nZ1bO41bqgG4vVYZgYM1AmUbYBXIwMJUGGocKbjMu/9W/kV5/9g596y3d//0fvese3cfzEKYpym+mV5/jyV87xzK/96qdYTD+NNBfw02eZezKCsqXwzjv46Pe9Y8j8ytd40wjm0yit4jUx1SwG0xpBPBAMNUOqnbv4/csNv/j4lAvwI9cNT1wLGTI8CssaI4EsRGA5Nh18Bj6zLNWzqPgnv/wn4cI75MIv/YO/cRJvlojklMOIBUUH7dbivARyQlUxGhq+/eQx3r61/4kvzDldwK7iCK61QPewuTbF3NqkHj7X66pCzFBfZHbHojX18uz+9PonuX7tschQkxpPiLazdM/koRMfWTlw9VONai3WjBlIEaOVzCRhkp1At57SL34Ygp8ak52weXkPg+GY5WIWGbfg/CuA9SUneBWJwQhBIASCBgR/ubREbwpXPavOX/aNu+RrvxucFEG1lkyKEOpzTV7em+d2J7j6i76qnqWan8M5uty3yeRjR6MH863xe+fYHdVDHMG7QIoY+mxFylzClLp6Zr537VF3bfeTEWJwgI9YvHIgm3yrOkYG6mC5wF/b/cgCyLaO/ERh8uMx5j6sHbTtdxUzCYSpmuzEYHv74eXVK4+vUuYl6OZli6wB8aESDdPMSpFLmErjLlbT6af93vXHqOdEiSwxL5OYD5qC2pPBVjPYn11aivk5f8Tv2sHWA2Ly08aYSaD1mIEVkwm9wbJlQDAmOzEYDO5b7E/PAWjnIhAXclugKFpLNNoZPOBfDhyVDClNnYQMgbI8lWXZSWPMWK0ZdwKnRJtFwpGn7bcNQm4E4+vdar73qWp6/TM0FZ3HxIHS4JuHYc84KoFAaFNbA5Cp45qr0Ctf/4WvP/n4x7/+6//mBOSnKcfvZT77LGVznsXeBQjYwuK1Bu/Ihi5wBO77sftL7ghXKWxMglOUYLyJfqetPUg8+DplOROW2YjLxdv4xf/Pk3wZ3rUHT88CUGyh9RKMJ1BR2UDdN/SFHJoS1FCXwvPV9Uf/X3/ML33TNy/5drfkxDBjakDKjGw5hzZxrDjIlMYrdqHsjMe8694tvvTv58dzuBCApasjuNxJQv3B7assPXWgTUmXPu+HChrRqrBah7o5P9+78gtcu/rEauIA9b393O+kSYsu3Xd/7+na2p3SmkleDO8PaBF9FdO4brLIlll4MFl2HJoL2XjykJtNP4m1XZaxA5VlXwxpsp1IStKdfBmRmPnIiNbjcnDfcn7t0fnVKx/V2fQCdZPGMxoM1UrcZFn+dFPYuOHb8emKQSXLQFaQl6MHycrT8UzRA5BNGzceDRFhakQro363Xu4/0Vzb/WSM43dk1qIIqiYdAuuW+lY7EYlVHVAH+7NdFfuo5Pnpcjh5qAq+UkwZDhnDGAVkJkG1yovi7mUeIaCWsbas6eUcbDFFqtZWzMSq33XL6pl6b/rpsHftMapFbHMyAIpIeugG/CNJ6/EBptfPNZhP2qI4kxflvcsQ0E2JNQkrnQlCBA2CYHcGg60HlkYf07Z3vc6FNCcGjUE9KW9wNDe+NObqU4CMb71HxpNTgyN3/LQMyns9ZhJzI0i5gpKiVwdtNi9S3mdRXL14urp+7VHmU2i9GVrNsO8ju6YRxVZo67JJjALzaX4t4JqKAqg80IQaW1zA2AtMrz+F1ohb8KY7tnf2ru3v+mX8zqAUzLay8zb4N3/9rSfY9jVHABN5ImLzhNNIZGq+jmsrF7KiIBRj/vt/97t8reZ9e/C0FFmMqfWOfDJI4nVPCkgHFDaLWBsW1LAPnIfv/pe/fQUdHmc2j0xjsVjEQel5VDU2IDYwdDXj5T73fetpCjhTQJETcSCxvWxYnRuWdJt2BQkcVOVaf9voc6sY0Xo5339ivnv5Z7ly+QlcXPCFBHJtoj+uCYiEzi5gISXm9ohJm7pxMN9/wi+WZwvVOjdSGu8vGw3TeBKvkkwDHXMWzCQEUNVqOBg9GPNz9lfGy5NZheQWF6LqJ8aQ5zmZtRjC9NrV5z+0f+Xyz+ne7gXqecICHYQ6vuoqSlX1AhZzqBZxk6e0fKIhMlsR7HB0xmb56aACmlz4Dm2UEsckTAn1OVcvnl7u7z2Gq0BdTEeKI/gmGRwMbcHJlgwtQuOTG05SpRezc1otz+KWZ42vzxl8TBlJ6NZDm0hHBZyGGcaM2Rq/Oz4sahUvpwjhWldFCiNaubo5v7y+91i4duWT1BWtq1qM9gGjitVo3C2MMMhyBkWOVZd6nvrYLM6q97vd+G2WM28PLI2GVrBRQwlhavP81OraNIgpw357iLRF56VXvaEtP/9i3yHgQ8qRkGWU49GPlKPRg2QxL0VQKaOhto2WjPxCVBCVlCsCfLV8pppOP818NiPld8hlwz+oUwsjT9DUF0uFpQKa6OYknTt91K6BzOSI+IS7zmFxjUyvszOMhal2r+zthgCTrXjE+Eoxx+Gf/ug7t47n+1A2I5il+zfgCMwsuDzpWS3zLwu8eK4u9viDLy3Z9TzWAPPaYa1CWNLsXYkM1koMqgrxZR3gFtBcAb0K9VUAppazv32V91+yE2ZSsl0MGLsYvbUkajtOYC6KKSIzGC+nvOXIiBND/p8FnGknXp3r1cBpYQADGyD4Zi3ylqnGeYgLULy76Pb3PsX1K09FhuLJ8djQc9JPh0aQldamq3usFvVyUbvF/El1zfk8gAl+N+JHKfELShvaJ2pie4wpm6a5aG1U7RgMVqLSy8YBQIKfqvrOVcwQF2xwrqoW86f8c9/4Ba5f2cXXceOKYk1K16GejIDFR0fytn65egoRCgw5qYZTVjIaTR4yJjvpGgXJIvbaiZfxpZIkMukOnHq+mH1W5/vn2qWuocH75M0hFijBZGCKeF9WySQNxMNAhFjXqKHZ3/uUX+5/LksMJs6TRtipd9gGMZOgMV/BcHvyUB+P1pR45+WiAQYpLVKq87ssFp9vSxJhYjBI1o4fK0YRQgwDd3WFhVS1IzHW4KnqxdONq57BaBXHdWUd7wJ12rUeRXpCCDNr7fHVRW0Lk1rTrhdawSHpgwLeCF7kRb+rSdwvMzCZ3GeGw/u9tTtezDjmR2g1o7R/1aR9YbDBYIKgvrm8nO09xmzv8WQAjKwqrDmIrRov67/GBNcujpFZda7CUJGxIGM/aPR3N9CGshpguphTmxw3GFEZy+7c4yRWQzHH4IN/951/jUFdwd5+BznIMMMltS9YWaWHSQLYxZnjC9+4wlcXvK9mlUg8qqiB7e1J7GCtndbcjmObKqztnReYBVjA07/xR19gMRhT1zWSS1chRSRK0aFZlcgyzrEdFpw6SmlgopDyfTaoiZLkyuprxgAqYariq1UyDu0MWObALglTVb9LU5+Laq1ije28B0xc/6vJSoy69drAQGgrOmqy/M4XT0vdnFf1l52GWeAgc+9uJyCZxbkwlbw46UQKMxzeD6Qs9S+fgpiJGpvS6gUsNfiKsJx+Wqd7n+qyXbW6r/cxOb3GHBDtyxBAG4T4uapLRiAbrcp5TjYcv8eLGTehB4geJvlJm1YxzDIrhS4XT0djhEbXsBaxMD3/ShU0KDHQYP3EEbHx2vaxi8UFX1fPZlbKTrIjWpo3U9iJSBGQstgaPQgSJTgjnRT3sscfrUSkEKMV3u92GGqywKeqaKziyAyGttJa2/soRSZPd1jMn2ya5rwxLS65aukBSDv5bXsNU0xMhp6S7MRXW1ssgdi6aQBSEjyhq3c2fm8DcDavi94zMD5yX3nk2AdsMbjPhyipilllBlvT0CQkbTJg1U+tW55l/9qjNDHPrEmuc5q60ZF2/61/tPlBJ7QYOguItbEaB4APGJOSYkM8yJtWkzHkg5JGwXwLcIQlx2wFuYuo7Taw7xjajEleUO15nAVXAEGYVYI9fpp/+4eBOTxZE9PlNmF1suxdmxLlR4MnNrLRVVHVrlNZlPAtsGV54Atf88yKAddtTrAWnFIAVFGSPgaYGlCDL0aMF1f4vlMFmmq8GqC0kblStLqKhZCfNiE7qcZdxNbnED0kjryTbPGGlTtlvXwWdXHR+oipNkBtkjNA6xAgq03pSe6OBtryGxI8pmnqen/vsSBhFjIpQkp5FhP3tht7pZY2QTHDwd2zprm8VChGowfB0KW3ezkkRJZoTCq04C7m1BcHzD/v957/EHvPP0WTVP1W6Ol2VdxgDo3zK4Eg2kufGLdYBWAydHz0kT3Reo6U5AJNg7h6ZXTqsCIBjRgaQL1cPI1rLq3w62iM8WIJXYRdazFfzaNPr0AeA5o8UaLFQONwdUoQI2FGL7GydNqCARVMlh9XkWLh6nMcnZyKz3OQycGN+SKp1XKchmmR5aepq1lkkA3il7SxQh5oUGog7rXo4taOrzNxp4lK9DWv3KXSZCdDCNNOSmul1Bj7PvHGTLwI6hwUlpDnp+capvlkcioOtVnNeQDU4/Fxn7OqN2fTmK3WhVm91GDJyNTG5EqtFmZtkrIExkfv4ejOz5jR9sNBynu9l5IghelQYE+KJABxqLoK8Vj10yLU5+ZfPvf3mF2JPtPeE1wcl0AssBeb1VsjvTDgxCWiUKiskjp7etdF3/HoJx0gQHAw92nb+ypKeynf8GJRoUD2tqMw1CU2LPt8Jcn5HpYNwzwugnkDR6xlXB7hG43y/GUYwv0T+Exc4qs8qLfy7jTWvxpY2FJOFJ4z9R4YsWTliHo2Z9COkq6+LBIjvLzASBecGBgECk/MKxsCUYPozLYRBhAgSIzSUYl5A9pFbtKkx9ysoVXi2y2QZqjNoyN4FGkNLzfaYS2kIySpziHeId5dCmiFNZMVIK+pHXTp00LCUEOUuifWmImK3em5EdzgwbdKBkxkkKqKFb9rgtZ+MXucen4B16ywvtVI9CSIgGoy6qTbETabZqLqXGQnfF7es0rlFsh0lURmM61Ce4+mac6vQmOT9tHW31pLqt5Krq1E1UYztSWLkxQmNqrZNjuB2B1Vrfoud0bX8+lqNLBNECloqwC8kqRSqqENxaVLcN6/RqBfdrofntmeRfFNV5HHh1AnSKhEyKU3T+3XfOwrJK+azaO7f+s+FOs3P+zGMx6yETZLuo3TGJSRF3D0yPsZjB4MkpVKQMVMrBiCgg9hSi6TblzUXbTG7uRopdXy7P7etUc7t7ubtDPSQc2o5aVrX+i+GA5efOivvUO9d032LW+BIlSo+rj2PDEnigGCslw2lBOLZDDIPdic5XzKpW88hwdOwqeOwBMS5cP6xbx72PWwW3jODOC+MRw/0cDg+j75EKxmdIX8ekzKGfASUAMFjhM7xzBcmihxz7lOjSEOnSQLOgajZhxEi/XY5NeOvHq0ac7nIczIslsOBWyjbayN9ZMANjLNvDRqq8fGZxQawnR/f/8Jqupl3rhH1pLl+WmsPe7SJEVDn/QOv5aiZTaomQTM1C+b83gfVcYIMKZDNuVx7WOB6fBbv12WpP/W6JeBNTjnd/fmy7N2OLxfNFZToMs3atpf8RqScJVqVymgBoPeciLsv+rUTyt/ANpJzDsARrLIZ1q4YXzkTDEaPRgyO3E+gPdTETNBbEoMbiYxpFkhaIXXOrN+16rWi8X+E/7q5cde046+CMq+9S1QaBWNESJ4VbJWpPQw2BmBr1jsOZZLKEdLhoMJf/u77+bEO2Y0g0nZ2Oy9EgxqAi/qHQsywqrB1vvIYoosrvCWSQ77V4lRTr0oVCFV2w0gdVQtnGNn+zgKVcDghVV5X0gT7TrcTkJ2Mkqsq3u+ImDZiyDv3K4NYYrIqVt9dixpIkUMZXw5voOHUMTAKhEpRaTU+fzsK+CkuSJjyLLsRDCGtQg1ANGVa0wn7RgUnaiYyfiuu37JHd1+0qJ1bu1OSDlejWQnvIJkKynScDCmPoQwDSolNjuBtTtepfQapmLz0zYrJlXjeg9eWYy7oRHQIIXBTIzNTweTP43z9NNO/+dKUXYxBz/s/9omlcGmwpE2YpaT8XgwOfpIwExCCFXwWhO0MkYmRtJ1Jt0wYvK1tWZsvbtUzWef9XvXHo0hzK/x5r1Fyk7dMaDwc9rSEEICD1r5fj8atIY5DEtAcvau7+GWC45kBZnOUAkxm86LfAfBkqMeCmvYGmfUtkHn36CplrCVRSNUi9slTEpI4d0asCGwlQsCZcT8bFST1nAfT4ujiZoJqkWXU+D1IO9pa0fdEv9aJfAtX3HGmowKLRljxinRLa/YGBlTRGd1QLVCKFWVEBQjrKne8bkt3JKdrLy76MlOltZMgrU7tbqLYCbGZCcaDTPM6pAUjclA+reTTArUTDB2Jxg7CSjeawTCmqYymHKl/puOXa6YfDJuihS2LY+iknw3o3T2CqbD+UtH3co5BDOIMotiJYtZoQJRgxiNd4aTnZ/JBqMH94NWKlojUmCjB0ajxHwYbfSHKpkxk0LcNMwXTzdXdz/CfDqLOUYPMX6+ASjbKQLBJX/MVCwv0LpiRLuFtcSVVitkjvGWwREwtkGb/Zd8cosSPZgShOKKFNyVWbItCOKjAalHbbtaMD66kSaMRWI2KiFH2hygAlFi1ToWdRNETfkKRNnfOm0+KgRUtUrVRG8JDuhlRy9WWbheibYpbUYvVa3EJAnQ2misO/Q7vDgIIuGqyTJcE5NPoqrRMKwtjG5WWCkQotP2RE1+2lszxtrjPtgdFTOxpsCH5niITrjTBEevBXcAWGMnqhETD56YBF1i+seoAukGU22NUh1noKvdBXTh0aurbhOwlmS8h1BFrxeNEXDGQlGSj499INsaPejJTwtaIVLYLI+HrU9RXq2/VIhrxGqYUtfn6un1TzCbzggOkeil8EakrAw1TYKwvCptvoag8cCIvvZxAboaTAiYgSV3Hqn9y8f4xtEhh2R08wYCHqywqJUsS9BqmqzOLa9nl3K+xsAYY8BbxNhogSdEEJwA4i4BqdSCprygr+2k9Cv2qGpNf8PeAiVm/KK+c2sNS+0KYSbGpmgwQxc59XLIWjApJ2ovPj8mWNIDvsQrah2JdIJo5bDHfRC8SiHGxmKIMX0gIJNNhtpt7FrS75KMMdF/0hiTIs5a641JkjKtJSjdKJqJgmqtqc0QJerOj/k2regQ2D+EEFX7rIDJ0Yft1ujBxpb3NkErbDx0ffqitj6z3R4PFIA01TOLa1c+qnvXno6ui83rgeLdMmW4mFM32jBS1FJ0vI3BMe1iMoZskE6eEGKazTZaru3hS3j3U41BWCYGY4nCsoK8VAa5iRm6NTlJB+JGatV8A+SWZYpXNjZf5Z8MmxmIYrABahMMkRjrYfGMrzaJrBjrLR5MSbp95UkVMQaLlGvP6MEArd0QNlzleGGIOuYC3QjM6BjrYe1JJ3vr0G5yFI7TJtcRU2qy7GN6eGhvP8KKwYagWGsxNiZZDCGWZNEgEZJKmddWjLSnInUSWC9x9tph/Ebe2q8B9ddu2pMHUJ3Mol7ifA2HJ4rJ+D0y2HqXV4PHISql+jBFHBhTdh4JJuoQErQqrCl93ZzXvb3HqWOgSmkN3oc1xO+NRBkhOdIqNA1kVsky2+JK0cReCswDDDPquWMwFMwoh7pJcfa8OKNV+y4gRYyoMmElIBUZMUZeSb5v0SeutcgCHTC3CNCMJjguXQrJLce5BkssWhdjzunaCfDKuCq9CFIwqYqmIKj3xCQTdueWIKKVCr0OBbwSJCYmX1GtMmt3mqY5j0j023sF4AZNEEOe56fnzl3EZifVe6zJCN5ViJRrqRo2vx+z6lditVQEQqjAlzHCSiN+3nPW17Q+OmE7TxpQZ41On7ep4zcCRQjpwFXiu6+/mBd2h6CVc/UX23bF5IHCKxMm8FeUrCF4SR4Ak/Hwzjd/zA4nD82dnwZ0YstBqb4Bw0T7a7pNPBNCNRmW5fXLlz6sl//in9AsgYCov1nVlTcEpUwa8VWkaALvfUwh157/XuOVucFmUAfFzR1qDEUruluIYueLe/cpOM50+n2K5klqQHS/ITLXrv5RlFZqa9nfGnP2z5+jgfOt03yWlahrSDlsI8XihlNaTLM96nqVT19t2sR1XwzG+oajW8RZe7jqrdFaYTywVhAvpRUQVRoDGMWKUksgZco5OIe68d7dv/0weo9nsfw5oBH3NXHHxnNbK5PZHYPWIdTncM15Qqwe4bX1Jv/PnLqKG2ElOLSeqyFFqW2NsZPJQ8HaHR+0UmsnkOG9xph/YgpMbZ3yjaTIUq3r/b1niUEi4H3yhF35w79RKetaGMBmMQGwVyEzNkIDecQ/EcDVSAaabTEXKAYD5m6OfYmuOYqAlkSjUnQfFlx01hdHP0N+SP7dsexEjIqZ5SXPMeTsha8AkFtD4x02i9n6ArZ18oj3iPHnyQE63DJzeCVpjbneCsNpU+6JFH8phaPEWFW1FjHjQ7X/w+YglWExzk+9q89lXgoRKayPeWCNdydN8Lsh87vrYGcMXb75WIUu472G6KIlqXRLhwi08oKVQoLf1bp6hqa+0IIh3bl8q+PwV5VE6VvmJeVRiL8YkAyZbP/YYHL0kdrYnUa1xkqJxAg46Fn/g6sQyK2UJvip8cuz82tXP8b+9HFck56TDj7i1w7LE/9GoCwUFm18TI5i21AvxdqC4B0iWYwLt1FCF2PxYvn63oxLF/fRosD36s68KGpDEtUQ/RlXccBr8I2AElIlAkdIFtylbfj8l77Ir32Jn13AJXys+11X+0ABkseChUmti3kCIij8hkDHbhVjjT6sZWeh7idpfh2oG7tbGcCo0k1jeKUZt4ZQRRGxMcuwQnT1a21DbW0rP5VQn5Nm8XkVVtXGAWx2MvN+Fxej6NqigaREOzesEdUVGuyHscZqAe3PEKaa8n/WzfJsCO6SVovPs1zQYvOt2etmtaj+ypNCP+pIxBI0+UtIFiGAyeRUvjV5iGJwXwgQE5ZGW4kmfN+oxBJJqrUxkJmA1suzzf7ss0yvfYY6ZjWLiQZXj/bS2RLfcJTt+5yhzaFaggOTJ21MJPoZeh/dJosEU4mwXwf++GuB//4P4E+pPzqFT78SjZEYkQqAgUmAKYBGR6/aw2WAADOFCqYIlB52W7U/F6hUI3ZoTC+xvwG0DslFQ1RvYI1+DahjlFq9WJFHVatN39NXrFnKwcq6L5ciY631BofIQU09qk9WlUzdxeXFrz/EcnrBq1KthQ+3seybCmEKz7vhk8LqXYj+fZgedNDu1uS7ZW3CWqt4jx4u+0bd1K8ppTEwKRtRxLazyFgHoxPFseM/G7Li7kq1DiabgJYxCYtDrEE0qqJRypUiM1qrq881i9ln/ezqx2Oy74DguwIxvtP73hDi0aGUPTdd8rZjR8g0MdayDXRIsfC9havJ388UI8yRiq/SfO4S/OOra1VSb53aTbROraW3Z4fu9kk4sGdEmU0GOWEhMemtTUlpTdvgldN3iBLrFGUC8lrCq6v2IqgxGGPG/iXEnqtqHcM6X7mWb2Z0esUpGbCAlHk/VIqWnUuUrMMBkcGHqdUwY5CdpOYCrjWmtRKuQAjkye2p9+2D0UDdGltnro7W2CU94yjri8KnlHKtF0mqONDPQvafPQnRp7R/6A2GYzOePFRsjd+z0DDzHsg0egd4T4yysqUlVYMVyK0pCfWlZjl/0s/2HmN+vW5zJ9jWCN3ev/Mseh028S1Q9pW/gLvusJStB5IhOe0nV5RkF2h8XHveecxgwMlv/nZ46g+Tt5V7gcfcmPpuPBBV/mgpaw1VllUqNWjT/Rmiz6vajL3KpNyfVQxoMOByAw3oqq5ovL8J0xDMxGrrvPySm/7SKTLWySohyU2olw9AE1bZreBXIlfACyzKdhZelmwQvQ4O4MkikmLCe59pAno0TEW1yjMzaVLGp/YcFuL+DER10AOk/KhdyKC2EVS9g1s2GKxAV0cqaKp31GfUsUCJT/lcJX2nHQtjeKMG/rw2lOB/iG5t0fiUQ5ZTDCcPFaPth5XsuCdM4iKSdi9XoLUEXyo5GiOrMCjO1V/0s73H2N+7FJmqiwITJNM2rLJntUz1jTcJ5rmrsKDA5aMuH7RRkFBjUj5TMfGwKTPQ4KkXM7asI4OTbcLb9gVJmzK9l3Qscg0jUYkbYz2kMW1jiZb/1oobCxJGZ+GCnnG3iHW+DQUDO4p3UIj1lnqxxD0/Rz3wTFKd8jbaJ958tcHSbsLQRnoIKyZ/U+aWJKBgIkIUjECWFcZIaVgZpKRtt+gBJ3dSKQ1VrUX9bnQJ8qxHSrx2tHrihm320KYEYsrEMM1CmEWoQeuAxoNR2oq66RbtPLVSrLE70bjRuquldRTSZlNSulhN/3x08cK3bHH16kMo7S4NGq3N2iQls5/p3ie/lYBRn2qC0SkMNwpM+8tLUoKU/TpRuvFaI6XzR464anJGHwxOZFvDd9nh8F2VD1WsAJynku9AzElRaCogKMQ6sBmKLJsLzPafjpKcJKfJm6/yHn9/w5D50y9DUx7nuXybK0WOr2BoiNWhguJTyKOpiOWwA0xMzbHlc/ydU9w7gDNDm/XyYAtkElf9kI6bWqIcGvOBZ/GPMoSsRE2GEYO0F0cEO+ZgzB2IowTGRN8kCzhyJB/DfIH4ioYlU+/wZIgaCteQhUX0CjDRQKakcstp0/YTsQSjOBuDCFQ8QpiKhqmGMCXPT7Thvj5x9FxaAch0vYp/2aBW2gTITTQQjmOyaqthJt0pFC+MKmba9WogCNYWWDUQwrSqqmcooldD5Ecvc3f3xqI7cLpXZDKHs++N/nbixEo7C20bvYPF/MkiuIsWNyW4iwwLNLORsdLbvN1hayaN2J1icuwDlJMdJAdjkBQU0DFYDEIWXxpfbYZ7S0yqbhUyFXIMmQoS4u+ZSky6zgqi8Qg1UBFS7tFNT9W28lOe3v+SkxAZImYCZiwhO9GJSUIMAuqXDJDV1wwSZRdrV8aq4XA8vuuuX8qOHXtk2vjL3mZld5OQRTWz0Uq9lNYYcBVbOQwl0Fy/9gn3/O6HmdfgDCZEw1afcQomehAFTWVrVu5X/aW7Lu71XnLgwleFzJdr2As5vhwiZRnzAjhiBtgcTJ7HsyQVgTFA5vc5Xni+6x05BZxxPorrpcnZ2toCp0hZrCWmatHULi90q7Yld8CgIUkYYWU0aBlLFjexIyb2FTGYfIg2XYZHAlBj8JRAnkou9EloLcZr0TWxdclCHEuDILEeUMxl4HdpGWjyo/Uk98lDBrSdKwNdMcB4UOTx+9ZCmZ8WkYKQcMcXmqVkNDRI4eom+uu+qgvjcHaxzsL7OsqKDmC1CSNrFvOnCgPaNOfJ89MRu+zfi5VWIBIrG0hMnkJW3hMDAiyI7bre8nJNR1H/0fGagCE68oPGqjG0cxhRu8waMonyaQghzT+QWbIy658Xvd5u6mh/FUiInhVmErWDODlr+V17a64LzxYbT0KxUG4hk8lD3ppJFRS19niUShNeo2CMxdiszG0sOmPEXTShrtxy+rl6f/pplvML8aEhphhkFe0X39tMtD0Xr/T+RpoN82XgwpUZpTQUzT4QOxGTZUtkqpLT9MG2JoaUnXnH2xnBg1upZ0Yci/k+RT5A9wP4HFwGweAkJmF1AjHh6wJYIFlUJ1Vi3ts8C7Fo4bLByADcAN+U1HnJssiYCewTCKEB6k7CadW3fhGwTdNYZ6TR1c/xdzNpC5T1PzeAFbtDSPhgKu/RTmAmxCekMNv2O+0wmTSYJitW+EheUhbDd0WdYJUpv6W+9NipxcElqyvosnompt7jZQurryatAJW4OZrF4mysERimxpqSpp62vsRt1v4D3FHNRMTuUBR3k+WAiY54JjLXdqN1sIg4VBxeAi6tBW8UJxp/lhDz+KaXl0DtQ8zfuy4WQfA09UE3Y5N8rVcr7K8WHbA5aO+9Nz/JtyZKqUYgy8mPHHnPaPvI+zHZCe+16mplaauBKWI0RiOLorjKZlrXfv7kbLH3GIurj2Nq4ivEuUzz2K9aoL05vDEYdphh/LUjcxU+ffbPvgYSCEvt6i0EC7WzNC5Kj5Kn+OwsatZhuc/REn7kvq0PFsqJAVB7TWUkDDCAUIKWoDltkNfaAg6B1vFXoCsXHyGDBqnnSFrArqlwwXUZ01u/tpWNa8XxPL0SMIdJdcqqEmtiqC3F6o+rMim5zU4i2Yn4PZt0oxU8J+m31hZ9mCAZy7doZKyjIw9neXlPCLQSAi24vaoglbJ9SkiJ71NCZR+mVIsLpC4f4iTxhqMuFt87mqp6NjNSWg3RzczHDddpZiknhPSgEYCyHN7PYHQPkkNQXIgjEnE9ElMNB5mjQFvRe3XaSbRuZgZMKmhnDdg8ZhzKs1hPTOyByVzTRtJM/VWhm0IafaaaxmSViUxicpXx9plytP1wVpb3IHYnkIQRkWQrEVBPcKmMSQhI8LuG5vxifu1RZlc/iU/V8wxg3Jp+36/c05+XvnzxRpoNcxU+9vSXFlRiu6QqEsDaCU4H1F5QESSzBB+bbi2YZslgeY33vPMdfGvJxQJODAbAoERDBvn2GRgWYLEErLquiGDEuGLYlw1QSs5QEh4GjAoYG6WkYsSCnazijgwGDsoQoddSPPSNR0KyaMQOdJBD7Gb3/8a+iz931R/ZKCiYoAPVJBqvBygr60a5Awy1fapL/l9FwdbW+D1G8tPeSUmvYNoazrnW0FjITb3HNdWzNDHgwUiyXvcMDa8f9Vzy2FDJ23wDouxP9z6VWzNW35zHSLEq+3ejLWEmQaXMi/Lecmv0YDRURkjApSKFBx68ySFk4+fWZSvWzYZkOonfTZYwTEz4m1K9rbmCtS3rHaR/qalT8zWFfPcSzrTanaR+tvhLV/U4YaujyYli++gjUpb3NprKu1gzaQsICjEEOWJ+/rJomIrxUyN+t17OPsvetc+w3I/CkoXoAaIxIORmtMFcD18CrStJeq1Z1V+9vWN24akv7vPBP93dh9EIjMRwaDVYm8X0aqqISYkPkjdUAYzdPif9Vf5Xf+84O/AzxZKCqooMr2nOx763Vr84Di3zNOkfRmloqDUJEoDWkAct7oQHT8JP3WPQH34z+uAJ9K+P+MIxKKwPjLb63kq9c6t3ynWURrvFTntD0LtuFS7bRvK44HdjvaPWxQOCRKPLZh6IvtbU+SPYLG1QC+OjP2bL8l6PFF7MeFOc1n5bOs4fS4P4ZvFMmM+fbFeRSdLd60svLCN0qQKDEvanT4WmPod3lzIBNEzlJv5KMdm1FEh+Kiu3HjBbk/eQFWAyFJvmirWd1IdypM8YhB7Wl04vTfMiBoohDLdhfGTM1vZOTLVmus3b37h/9Wk1J9aw8tmNWhadGGEslEPM+NgH8q3xe7zYncqBiilXNciSJBX5QGWTgmAIU4Lfra/vPcZ8RkqWm+aGFVPvzyWrzw9I0BuS7OtN2Ry4Bo/+6n/Y/djpd59gYjxGl9A0FCYnGME1Swo8YqKKndkIk26HJW72PD/81lNcvu/yB/+7s0yGlk9cdLOngqEOqig1ijtkC5pocd0K4CC4eGANgC04cWbAxb/5lgE/es8JvumIsjNQFpLxe88v7/7nv/n16tcvI9fmNVZSNVR6J9KhZNYYajdPrVoDtH6OrSyjLca3tfUA3u9S7V/CxUKDXoTgG1pVdvO+dKqSiStp++h9w+3t9zmkcApiYv0nOWBIM71VDGg8lJpq/wn2Z4+3ialD0M7Z6Y282VUVYw2hqSEElrPpp8vto480rj5nsDuxmOK621pU8aNJMu41KfOiODPY3n54aaQIe9c+Q1PHRYPBHlL0bvX8CO9gsg6ajhvSRlC/KMhGowcHo/F7bFackcwex4fp/uzao831q4+xmIJxaIg8ub+G3gi6wsumNpNXohXUlpTAKHSua39iwBSQ53D0jp/KtkY/Ekx+2nmtnbSIi6RDy7cZzoAwtZmURqBeLs+66d5jXN+7tLaIve+eLa4rCbmaN1p4p2fwFA5ugl7S7bX314gytQZnQv25P+djf/97Bh88UWwxtEvwFVaiu0zVNBFbLVIy6gA2jfQdWzmXv/bn/E//5t0cGX71/R/77fmZEh7bDbOPz0nRLayXr4gMIfkLJu+DiYchjO+An/6BU8OfffBvfCvfdXKLo9ML3KEzuDRlMBB+4OTd7H/fXfzFb31Dn72OOE3xrpBSA6ZZ0t5490WN5Eje4q8tTtc5l6fImlZJzYry3nI0erBB66D+E4RQoyH6o2rrxtU7NrpTs3UdEygGFNtHH7GDrXcvmjALAqbI0aZJWcRW7VjnEAreXbRWirpenqVZggasmARZ/OXY2nmeU1URS3f7s8dHR44+4py7mFmtA2biJUIi3dqXdsoMoGU0AGYns2y0UyDl0rlL7E+fjjakaMAwmz61wCoCyyCStIEUjWfKIXarvGdwbOdntCzuBimWXmu83clsdsJubT/sFcJyGQvWiWuXVe/+f1lm4CbUSn2blE6QVuEwtJH6ErWwLIcsHw8mR94fbHHGKbheoiCvicNKdI/SECpDmIlkE8VdcsvlWa5ffSw6ueexRE/TAIIRixHBh4bNEdbNxq4A+tU+N62AFQ5nuq8BZYjhmgscgSf+1e9++YOnvv8kp/MtcHNYeMyWYdgCiRF/pgmp5hQAhmMh0HzjKzz8bSf4G2+u3vXL//7r7/q3X+OnL8L7ZvD0HnE9m2IL1OObCpI7lKlgXMG3WfZ+4JuZ/PC3vZlvv2ubLb2G3/0zhsahNMjRkkwM8ytf43ve/ib+1+8+wv/lV67/m8vwczN4WoBGQ0pDCIPM0jh/Q4luzY+1T+2mThOyCM35rCjv3cqzk82gvKfau/5JZtOzOEesFNrKt+1wpAWlScW844777WD0oCnLexqRUvP8uKpWPvgY3NCqQJhWvOoWtVGthmV2cn/38s+yd+2xuJVdTN4M5CbHHYiVf+1pbe1uLGQBXN3EDzXAfL67vH7144MjR36iAZxNKr93FU1znqy4WwZllHDqGrIcH1wZE1RrlY+23r1VZCcW+6MndDF7nOnsrPoa73Rd+moPtzZvREiqazE8MRhtPbA1mjxkBuU9CzGTOroYTTSL+odHMdmA4XZ2cr+qz3F992w0qBhokoOItehmYcS/1BSmSJitYaywflxJEhaCIOXwzNbxOz/cGLvjRMooGEhaxqYbFytC0ICIlNbYHe/9bjOffprp9NMRz45STvRozCLURguB56wSn/db1LYHOqNlZ8nV2M7gkrFik7kedJ57NShDBDPI2V00j//6eT78439z+KEs7PHWjOiRX6WM6y5BURbIAQ9+CcbPsKMCGzxc/xrfORzxlh8+wQ9er06ffW72+X/7bM3zFZ+7uuTjVTV/xsJxCzvjnPdMSh66++Tw5Hfe9Sbuf/uEM2PHdvU8Zv9PMaLIwNA0gTpAFmrUWLJmwZHK8D07ln/0Tn7kv/sP1BW8z8PMYlgSPd2c66mH6STrDFMSYrEyuAEmEyXXIGYiAgGt6uB3pSjOZNtHH3Hl4Cx1cx7fnGd/eq5VSSHE07zIoShPkRd329H4PTYr79W8vNeLmcQkFaZsGWmnJknA5AWqHnU1sYa61lr7Xer9J3AVq/rpUUprguf1rhV66PAl+1BrmNLQpsgRCJ5qPv10ltudfDx5aFlXzwQr92FNSTa8mxDQ1s3JtoGMgoqUTrJSTKjI89NmNLyfzO54k58y3l0Kzl2kaS7gfIIIUsuMgbzcMcPRg4Ph1gNZMbhPrBl7zGSJFI2xx71IClRovTMCBjkJMDx2/J8ugv8ge1cuRCNDBoTo6fFXgalqkgW050WzAQ9ESni2MTAoscPh/RT56SBmEjrLFgeguFgBJCac15BSPxbD+/3E75JlJxEzthpmm4Jlu67Wm5FSQsafJxCmYsHjdyVoLWid4S+Ld5eq5aLWxXwlub7GlIHB1w2aCXtOH/vYZ//sQx/5X9zL1atf4FjTxCABAw0W7zwDJVqusgw3UBY2o8wtw6aGhUOWNceN5f7tjG8pDT/+7SdxMvyR+X7zI9Pr17FUTCYZwy0h84axO87AQeEukV2bgVRRFReiNDYUqkapVBnmjtKBWU55x/A477nnm3j28lff+6+/0tzXwFMBh7DK4mpkEx/aoP7sbda/6oxI2aTxTYWacW7NONsq7y22tt7tG3cpuOZ8dscO6pvzjdc6BHdRbHYyy/PTtshPSV7c7YNWKmbiMRPXl6aM0LpTxdhIu5Jeg1ZGIRet6tnep1jMn8bVEHyKUDOohljL6w2ujBqJSYwFSZJjA9O9em7MY9uDwX2ZLe+ttT5HyE5kxSAyubq6DGaCteUqRSIEUZpgSiNyUgozkby4uxhvP0xwl9TH1IQhhJkSpn2bmMny09banWDz043JJgEhhBA94HoMtTN9qyEGWOrJotyamCM7H9pvmp9kPiVW/LUr74E3lJPPS6MbJeBZ2YdktYeyHBmN352Nx+8NWX7qRnur2z4b91bMxGT5aUZHfkIHowcLE/NlbI7kDeqg9fy+I2ONbvBhivpdK1pnhKmvq2dU9ReqZQX4leRKXxAIXR9fDYqhJVlBHRoq/LN/tOQn//mvP/NL/9v3fgfPXfhPHDExjsmTY2QZm9IQAf2ixNvAXl2hAbYGxL9d85SF520Tw/zaRQaDIcZkhK0lRjwU0ZfNL8GGOjmdLjoPjpBgB0knqY2CDrlEvNztK9RTRvmYv/eDP8gf/g+/+ctfvLq4s1X7s7zANcsUQ76iQ+dKV4N88G+SDmAzgTBzmLGIPa4iaG53VLITWZ6dVPW7VqUIxJr3Hq0dZqxeKxW7E1RrDWEKUiBSklKsRYdpwViDD57QBBDBWlNmIRTUzXm3d/2TLPYjBqMhVtPFrCCO1wlDulWKbL8dXxtDpENA59PdxbT8xOD4yU9553eDd5dCXZXGZBNvs+PrPk5Ce/AElKBaRUt/dsID2GKCBYOUEKYmJbcRkTLLMkKAxju80wrvK0RibSXTMsjuQbTVRhWDqrBs3MXRcHBfmEx+bFEtPoNLkAZtCfZXewRfJ5IV4+lmQkwy9k0eMoPh/XVbvv0Q+OcAxTytqa6aFIjdMXl2MiTr1Mqd30y6wBgOig09xorRQB20EhumJvhdI1pjwtSo1mqzE8ClzeqxrxVl0RhSUDdLlgJXlEd/5U85ddfnz33ox7/3O7iy+3UmWiPeUQpRE2pgWUMwVUwLYGNprGWAsjDIMI8pLBeOAkGW0XBh1BBMTqgznDGQOepqRllGwxiWLrwiuqQKfq6MjBAa7ThJJgIUBLUcueMYw8nwuFxddL6rYiVGTHbGhtVUtzDM6ocXGHSvIKbEZCdUoQ7xYlF73BgzmVV+1wgYsTsYMxGRIqC10zBFtY72l14xvS5rRazDpCHidTENnrtsbHZ8YHNoqt3F3t5jzGa7+GhRt0TsSTs86Y0trQIRXwMExYfWlGmgbqivXnlKhtuP23JwX26zE17DNLimsll+HBG8TxMlyqrkt4JqrYc4gIQuv63WaDzkaucKxO4gUpJlJa0BS1sGKcTKVSa2TSJuKik5iNEwM0hhRcrO7yjEPkX88DUbylecWne0LnYCrZAwW4mbaZjQ6DApQFHek5XlvY21O875XYyZRLe5do2HNSlVgsRUkUZQ9bEYaUqXKUjh/OpZqVFVHye/YYUADSnlppSitpQQZvFW0ZPHS3YSMZcQf2Bvt8vm1dQ1MmsLfLUAgaWJ2aS3cj7z6L9v2Hnz/od+4K1vxYTrmOvPI7VGfygb8cpcoEzVWr1E6/zcBTLvEC/QBIrhIFYp1AayWADOOYeYHFMY8omlqj1NEljzPNV5U4OrQ/Q+GJgYoV8THWGHE0J5B9eaAZ/7rSf56qUrH0wxG9EfP7jOCNWnroQ2dN4CfR+5TfWjK3dsDIiNNWRaX7uYfavMxJ9srw9CKaKoUFqYiAgu+N6ikei+ElLuyhCmqmEajO6IsSVZdjwXC65huT97PFxL0ShhlffA0CaC6XfkjU3S/YuBEjFmIEDdUP3Fcx+0O2/6Z8PtI+/3CsvaXVQHRvLjagzBJRDQAGlzC37SeXLYjVzAShm3TD5BFBo37ZgpSpeATg1orKEUS3C3nLo9iuPnRW53qvn007O9649RR/e6zAga/MEc239JKeVFnr7ghVkOWXFGrZk4YkWL+P3evTZV/7ZcuIKIxRhTqoSyU/772cak975q3Orvh611W6ARIz/tfX3RobXFjJGEx27skf5Z/Gq6K2ahjhWPsyLH+YasEL5R61lvufyLv3L+XfzQnQ/8rTdnnLYxK1AMeRWyTKOv2iyKhaaAvMhRH6hrT2EzODqG+YxgFG/BZDGJfFknqKqCxRxsCeNhDsGiTqlrRY3F5hrhB+O7EakLuJYbzs32eOrLF/jV39NPXIWPN8TEOdHVImGX7aj1jfbphG6N+aZf2z6NcOg2YrJwhhaXaKUak4xfyeiRDFBBkyQq9MSBmIHeInGRBQVVTAhVSNBe8H5XRE5m1hIax/5s9lmuXf8ETU3rx9ouiA7TWjsh3uikK6+YdjO1B9ZiUftr1z85R8piMLgvl+yEUxDVVActSYUhYtIibSK5pG80/Y0Zk66IaCqxbciLwcRpQJtAE3yFuhojhZisNBhEUy5hdT28FYwGDGG6XMyfrK7ufoT5LPZDfbeGVurrX11aLTEBYxBrJl7MWMWAbcvgrJiy6aIV0xxJu49avUXSZzEvmQ2r/de5QLZr+hB4QbQt36TRlxxDG2ofNJx0uIuiUoZOozvc5erV3jpZtIEGXBPIhgVuWYOBy8KFCv7OL/6753+j+t78gR/9tjdxdDwDAhIqrKsx7aIORGnSN0gOZWnAOfy1aQxgSTwp+JTCeiUYUBTg1RIWICEQsLEOjgEjKXFACmNqBnC1vIMvLXN+9UvP8a/O8v59eCIm2GD9dMtYrfrWQKwcOFJXER2yytGq3bpImdGjlVTaKrEJYvAq0am3xeuM0OYSaFXKqPJLNDQF7QxTIlIWYkpb2ElVLc7i/a4lP+2X8ye5+vyHWEyfbaOuNqUAYxI0qMQTSkNMtRcbHAdYtIYwFVy58hwwE2/SJtg01kELWVzqBkwNm4HBq2+1GNyNnfPboVfoldNIUkw31gqzvbNNXf80dxz74Ghy9JFcpGi8n4qGgiwrgwpONboNtxsmSZhi07HjHZp8ilWTY7kElnVTScz/SW5sCZTtfEObEjBMDWYSc+B5JFYvmGbanJ9d/sZPsj+rUY+1JnrxENdCuKFXQJiGGK03SSJ2d3K3fpjtnBpildj458Qk1BB0Vd9p3Q5wuMHMY+hqoLVvCtE+0DK56NurG14xUfbowVV9YcQKodPHDWrsjmrCqG02wQe0991uNaTAFzGCqrQl1uMeSRhDCH3/41aCNYi00Mz650gfdU0/O0d0U1IUrTTm+q3WEqu3CX5ew2MwC93iIjLVNC5NgD3gPPydf/bvm5/5j1//+od//F3v4Dt2SuzuBcYVcASYsZ6vMRCZjQG7Fe8lHrIWXmtJAbEEBSeCF8hzQyaKpUGbOrq0lLDvwI3G7A13eOrPr/DYb13hmQXv2oOnK1I2q7h7Vwui87hJuVIlEIzfTc/dUZFSuyBourygscHQiruDMmc53ft8UeanjTGTZbU8HwuimXE2Ht/tqtTvDlfodzD93iL8xmCMlDGdYCA4Ny01TEsx4xDqc/OrVz7qrl37JMslaEzUHdStaUGByKs75gKYLEZiYU20/JmcqlmeLQbD+wNN2RoE4j3MpI8vG1sQ6mVl8qx0VTMd5Pnpzq/WsGZRXafVZ2vsRdd/vFHYb3y8j9qIBlj6WXO5+ch0uTw7GE8eKgZb78YWd1e+mWKyiTGGYLIk+ShoVEk0KNB0Erwm4NUlrCcvyrKvUayigDwQqrwwpW/cRfVhVlozzjMpw3J5dv/65Z/l2pVn48ZNh1fqTMypE3tikeilkeYX/K5qmOZleW/j/WWsPd5xL10/mGN4dZgaoCiKM/tIVLfrgNgy2tlYRR+FxBw2BTpdQVMJNrE7YCYmaL0qe2OS73bPL1TjHHuUEjvRBixm7MWAazDS9ktoAW2b5aczW5z23sSxF7sGod3Ams+hgf+GXu2R1C49/F3T31XacUh/NwkK8tGDPRMzNkhpNK3QNeFg1YbVMn11mG3WnQz93ZEGxxm4GqCCjzz+NT7/tc99+cl/8Ne3+bt/7RRHzJz55a9S5EqWJ+OLbyuixr3SLKJLZ7c6hKivB+hi762kCC9P8A21SwJgnhO2BjxfKdnJ0/ynv9jnX/6bL/M7z/Hhq/BxX7I7b+IB0JfrbU+I1gPOxWEKdgd6EkInefWvTa4ZCsvp3ufZ/Yt/XJfFGTuZPDQsynulzE7Ml9Wzbj77omTl3dqepspKj2klAkMrqdIa31pbTCZAXZ9zrnqmmk8/7eb7T7GcxcHTGEKcUlJ203+YjGQkxX514woGrTMJM0OYBgMhMdf1ZSQEV4P3uwg7hjBbswiFw11SXowaddPrlFUH1UDt8FN9Yu6b82XTnKcs78mK4bvU+10vdidemk3abFRiMtQ3B+9Ju4UMTbW4nLwAChEpM4nJskUEMbbUUE+tMROD1r6eP7V/ffbZsD97nGoOIaVb2+Bk2ntCPPTS3AaF4Hc1uEtocz7uhfz4ymBG1Ewl5gqycaPMJIRp1DZCdL0TQ2hLxvTchPqy2tq4dtV6E8SiWlkNU6NyykhM3q1ien6qZtURp6g6PGGaeb+LD7MUI05oQeQ214X3BO8uBe+nIkxUDZLdTF9p23cI8zrwtfZZL/C+8V2tl2lBhqp1uZLgdzWE6WFS6krmTSHTL9z6l0TZ2nT1F1CaADXgMsOV2j31e9c5/ae/uffB3/ijvZ/+4Xce577T38pxd5UJS4JvcLVnkAuD4RARKKolzdLHbFg2pmNxJgUciIAJOOcosxR4YAALC4SpGXItu5M/b0b88q/8J/7def/e6/B4yAwzFwhVx6deNhnt5MuOBLAapmLMpKmb88z3n/bL5dlqMnloa2v83qGAsflpn2ymrVroSVxTI84XvJsStLJIaZHCQolqJao1vj633N97rFnMPstifgkXjSNtS/SGqmYCZzVhlms7LS6kkuhuXLvmPJiJEB25VxWzwxTMREx2AmMmpUiJkSLvBkB59U3eqe2tBK1AvUCb6tyyWn6EwdZ9kzvu3MmtPZ4ZKdRmJ4MqLjhcVU/V+107KE7377gqY53es6imxnphYSre1Z2/q/rLWaxhv1u76hm3P3uc/WkKHU6SdE/xOIwiypcS8hghQ8pctYoMVKu6rs6DGYOZoGlNaaoeARQZKfGS323DqQnRRmAw6AtZyNrDvGMiATTMcgXF79YuzCxmHIjBLro2/5BlxXGjQubDFLS2Ar5Ndr/W0QApKXhJmBoxk0AgNPXlmzfw1aOYi1nKTMzECGSYSU6YqgErUrobFBoMvf9fLcpaUVLSw1oRetWenKqJmfttzgVx7tHfusYT//HXL7/nrfbyB//+d1vuPnGEt735LRSTgJtN4fqCUS6MiiEMPSZFFgUJBKMEG3e4GmE4HHFl7xr1Ykkx3CIfH+XrezW/88fP8/k/3+P3rvKhPfjUHnJhn1TaQeDwVNYvntbqS7WdThKFAQqbnWiM3cG7S0yvPxvm82dn4/0ninL8nuHE7iy931ViQmw1WlnMhLbOvYSpqtYiWttgxka0Fgd1vTzbVO6ib5Znme99BldFtbgtmigafw6HbWhz4Le10lfJncuGMDVV/cXC2J0oqWqtXR9j5QKVMHWN303VDGpc/UXfudu0AxO6qJyWXll2G5mXyRJm2Yrey32olmen8/2/R1GeMKPxe8ut0YNFUd5TWjPxIkXIpPBu+UwCRCYQpiaNe3T/CVN8mIrR2kh2QozWxtqdGOlqd0Sl2Lt65aMsF0+zXJzD13TlrXXVtr60eMM+YBCULPjLpq7PiUhp1YwH1h4PaGWSj3NMhh6ZqqAVtd/VWMes7meCiiWfD0TGH1jtEbWKaadXeKTfFVc9gw/TMstOBtFKxe+uVQNIpG45E/W74sNUXfUMwV9us7jFirqxWrMmrNh6vyuuPmdMc95id5Awk1SB97UmRcommLGIlF0pJQ3T0FTPmOAvRxeatJdeYxIYESHnBoPr8JwI4xuQPKZUMxaqJYQaoaEAJgaywIkRPPi2I3zi3m/Z5jtPn+JtRyccERhozRYeGxZoaDDiMUZRCTTesQiBpRquLBxf+YsZf/K1BV+4CF9d8tE9eKyGLzYwazOIWxsP0jrag7BZhnetVTe+dXgUrXpvIm5VDDly6h2/U2l+uhG7460pUUOWJIIgfbedgNVAFvwUv/j84tLF/5p6ESWKkCRSyZGt4Znx0WMfEGsm1uSnsSBid1TCVFVKVX/ZOXcJ9buhCVPf1Odc7XdDvTzLstmNoZeemOAjGbu6vJUHNxVtn4B2E1kCVqBR4mGV+pFvHxvbvLw3KLHMyWH3Eghqd7BmgmvOC+5igZTVlefPdhLbIcapNSz6ZXLZ9t6tXTC0ZuE2M1jnjWFiQuXBYCcry3vyorjb5MWZbDC8XwU6RtpnsISpiJRB3UVfh2ndLM82y+Z8WM6fomp28S6ujaai82uVmAdUg0OD63w8D/Y/GWeSOhmNQhZbDrHD4Y7a7IRTM0mO6h3Fb4WZKCAxWiyG2Evprj5/tltj6g5l6CtIqJ3/1ecqqZxRPmB09Ni7axcd5VspdS3mQtv511oIUyNa4+pzYbnc1eWCuDbTtSYGS2AsMtoem0F5b1ApNCYtn8LBCryvBSlSBMlOIGZC8LuiYWoJM1xz3lX7uyyWrKT4zW/3gZVXniQmBIh5/7PEWCU9zgNesshcO2u3xKJ4ronJAjTECq7E1xbcN4D7tuHht+Q8cGQQ7RNCqjlmYynt/SXsN3AVzs/hyQU8vQ+fm8GFBqhEog1VYaswiIboDpvapa1lvKWXyFhNct/oM9b4WSDX5mKmzfnrX73w/VSLiLe1gHEICXtKBjBjUgdlpUZrwGxtnQje71LVNb4h4iB9/Cys8CNNUrgmG4RpneT7XUwLQgykYmqZidCcGpOSVxgweTwMD/WwbnGrNGJFnpKLaDQy1FXEeEVXmPH6MPcMIIfc/kVQYdq0j6uWtbYJFCQrkiCfwMkWA07GKoohh7K+1sjV9DBYUTpcvcU8Nd3btLBKXPmmd6BsbsHVPIS1sGltsSzTZjYjzveN8MSW2uKZ9TId3ArBH2Cshz2/bzOOFeDiDjblgFCnBB+bk9X67Hb4ZVqzykpz6uGTxuaEkCzDxsY14lvIy/NqMacXJhOrwnbVd5OKF/2XuTFTTd8FXjXj1WEAY5IPIgsRT90ykSxLG2+RGhwQIgNsGfE+nF3C2Rl89rmGHWkoFSoPuxqFzd2alZ0uY8UsK8BJRlcWw4D6iv0mrOpJZWDE0jQpK/9hwPiLpNbNSnu/m8RQiiw/jZUCjekCW97j8VFFaoFen76YsON24Ya9xaWe+bbb8GIsKcELnZTSM1QA4PUFp79lRIEVrBE/aKLU0R6I/W9sHkiOaHjsGE5kqtbE9Jg38gt4JWgTRm6f1WWBa1aeKsmNjLVM/011iOTcO7j6TK3112qdmNO6N2KwxoAKIUFMLd9ezcqKofXHQkz0yNAeI+pnbaKroND/kq5/FoAmMSlRrJWYmtNywHh5GLXBfLFaQ0wIFFpYY23+27nvHTyt69va+LXQoEVRDJJGRFn5m7GaqNeTXN1rf1gx2Bsx1BXGHN9epeZn4BJzct0ib5dli99kKE5D9BlrNYQkrGmIvnk1GtV1OmHjksIlQXAInuTOZCRGy9h0uldJDG0ZZFu/ReOp3UbWqEYXlyjBKZBFg9jLDH/pgfn0M0VFXDJMl8vlWYKvV2KBEkLdSfaubdzaRulJAj0SExepqkZVc6MtreDbIgIdo3+BPnQuTUaxGLwPWJvFnLK+Z4XoHthfVIHMWJx6YmRYypOrJD/DV5faxDRtxGonvKfPMxvHyweSaNs7fIxB3YZXAGwcttLj3hsjqSbNh49eVayXW2n5x+a3+1K7a9Wm/uZOZIxBg+94Wde2/gHYJTo3tFigeu1sWMJ6qw/VPw7cO5AbocH3/ri6S1e1QelJqymApfN2WM28D82hY9j3Wnl9SKOkH1qGGtsoaC+7Wnfla0oZUnVPbaVOOCgoZ9BdZ6ALwW0EQo8LbBoTO989JN4lmCjZtfvBDBPGWAEVNlVFbqtoxFO3rXWU1KqkfgT/MqVW2RzweKS0gqUCJovuWa1faVS2ktS5IekfOAU3ZrPLQr/ehI5MukX/sxv2rN2ErFRpH5LsL+B9zcFqChsScfrMV/Nkr4rO9d239NVX8vrCfGso6g9bC4VsatMGCF26xpZeWArZ7Pthl/ZZyErN5hDJ7pCGJcYmgIawJu13DHZTil577zF0XX/coUyVnnDQu3fTLFvJqPviJrQRv6MxARQtpn9wTFYJxnqHRpJ7DqAcryEpgdaTZrMdr2e7oM1ulUgl+dXrYYX4Qof5tGoSxAFeO7T6fwS6iVUghShGOQFcchnqwlC1QwAIusrJQoox7yIoNiSDV4Q2FmdIbQhCj3Fvyixhfa9tbppDnnEgiuoWm3cor3ihA6X/95ttrhuM5U3v/kqJAN24xwNyExp44SF9cevgRsagw35vlcqOqfbfIUETfemv98XDG3vw580GtLBUet8Mt96kF5yGjXlvH9mOw2E48uHnR1i7TjgofL3W1B4EN9tDr1fbMpuYx3r0hCFGtqz8JX2LW6BIz3tAyLAq6S8aGaQJKwbbU/OF0BUTtEQpuNIF6luDRJYk3pVKE5EBR2LD7V/Tot8oi/JKULuwtR2L9b/d0LX0Fo/ITcvsjejGvWphhhdoxwtsxMM21w1V3leT2iCOA7W/epcc8lnoS08vtwk3+kM735uCAhzeXj344wHG3P9ZD07j2vpqNapDGth6IxwUZDYaIP//9q5sWY4QhB5Np/J0//9jM6N5aFBAtNdZKuWpunHS7YKoKGCr/i+DLQTergfOfz9ebTDqob0pd6/57NWIAWhvLg10rW2gG0ZjJFV8vXo44zceWPDEQgoE3bhaPE6xTvejwkFnZoPuaC/XnMhvZNd/6cNUNVNeZx91++ATW29MFXYwVGfXKRgNwavBpVpZ80RjrhiXw4KgEQYGvfF8DoK/OzMeVKvA6hleOBKqKuwRoLSoNk03f/GiEUuSB3sZvcUMY57K7aNd/a7V2b4HPZreskAwWMo3tQw5E1tVsmzTANZT1h940latNT5QNylzKLLI5ICG2HUg/p5IyDlRhychVrywml0l24ujm+2k8nbKmnH8UWepdhGFeWLDh96xqOv1F9l6VULreDF5Zhj69SsLT3Mdrq5ExGKucfI9hSMbuBvzhvTSa/5LVb4X1nwtTUbcNSp/qkLVisZyD1MHe2YFi5EmwgIeljdOehnm1ua/B60z7TPitadpwTxvErgv78WiOli5MxwAHnC9qbwvrhBpG1NWT+YHcKIMsp2Gv433rq5IEy30WcCIjnPDFitN0fqlVPl6hRax8uSrtXw6SrcwTNbN++0IWsdoaK1ER++xUneue+87r+06fWuVam3EyrFzGqlM1OPry316qmMlirml8p830mcZf2TS6UH205I2AVhEFBa+bNoSZhtXnde9ZpP/Tvos+ZVlv9uASFdJG59UVuM5DsMPoKcUu037Zm/W8sQfyA64UlU3/bKpoEKvKHlvFXc8VuCDiM8MoNP/RISIJ3c+oZXL1Synb84hZVyceSKdJZm489PAi5lMJLKcHMXUkInWKDnlldCS2tAc/ccAtjouG2JG8ZOImztx3UG95Yy5C5lshhx6cVw7Yp242STVpt0pqAd1DJQPT/geOWsf5/KZr1Q2X3dQJo6E0Fvzy4ODVD/3+wG36RqmQmtTrWYFKwUy0awmqrZ+Gp92Xa3Y3d5qMnw9YkY0gy1XQSmEC+/bZPER2Jm12SHtQ3aCsbpEtls67UqraXWQSUF950Bne2lMAYEEJ6/KUjBFmXK1jVS+7A+CDhVmQNrwteiy06qs+X4Za82JMjyGbf6fwTFaPEGJujosq8QaVpewg4y2DVwafWE/xIaWMyhM4JssrN+FZbWPWgZpGxWwca6m+Mn3TlnLV4mqGlSWq0WUTd20/00jnL+j/5XryjwFuo0AbLKo8XlIPAE6xGrkftoWkLoaxwXryqtxPL8M5107i7kRZftcbYbd6d2IvXrfN0Fti2vZb4+1m49B2uz99MfQLhhN1M/fS/Peif8YvoOmxdnSr3DCFAVgcOV0k6nPiHHDCly2nQTkkAHEumdQULaqyLk8kdpxZieGi6Od77wwuF1T35Hhq60D+3GA/2dXacNk/qLkSjnn0h0VKFcF0HcIsG/FpzagTUxMTPy3mIJ1YmJi4mZMwToxMTFxM6ZgnZiYmLgZ/wDuZJuLFa9ycgAAAABJRU5ErkJggg==" alt="Eprenz">
+    <div class="divider"></div>
+    <div class="company-pill">
+      <span class="live-dot"></span>
+      Market Access &nbsp;·&nbsp; Sales &amp; Marketing KPI Dashboard
+    </div>
+    <div class="period-chip">Mar 2026</div>
+  </div>
+  <div class="topbar-right">
+    <span class="updated-tag" id="last-updated">Demo Data</span>
+  </div>
+</div>
 
-            /* Layout Grid */
-            .grid-row {
-                display: grid;
-                grid-template-columns: repeat(12, 1fr);
-                gap: 18px;
-                margin-bottom: 18px;
-            }
-            .card {
-                background: var(--white);
-                padding: 20px;
-                border-radius: 12px;
-                box-shadow: var(--shadow);
-            }
-            .col-3 {
-                grid-column: span 3;
-            }
-            .col-4 {
-                grid-column: span 4;
-            }
-            .col-5 {
-                grid-column: span 5;
-            }
-            .col-6 {
-                grid-column: span 6;
-            }
-            .col-7 {
-                grid-column: span 7;
-            }
-            .col-8 {
-                grid-column: span 8;
-            }
-            .col-9 {
-                grid-column: span 9;
-            }
-            .col-12 {
-                grid-column: span 12;
-            }
+<!-- TABS -->
+<div class="tabnav">
+  <button class="tab active" onclick="go('overview',this)">Overview</button>
+  <button class="tab" onclick="go('marketing',this)">Marketing</button>
+  <button class="tab" onclick="go('sales',this)">Sales Funnel</button>
+  <button class="tab" onclick="go('creatives',this)">Creatives</button>
+  <button class="tab" onclick="go('weekly',this)">Weekly</button>
+  <button class="tab" onclick="go('monthly',this)">Monthly</button>
+</div>
 
-            h2 {
-                font-size: 1rem;
-                margin-bottom: 18px;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                color: var(--daintree);
-                border-left: 3px solid var(--picton-blue);
-                padding-left: 12px;
-            }
-            .mod-sales h2 {
-                border-left-color: var(--int-orange);
-            }
-            .mod-partners h2 {
-                border-left-color: var(--harlequin-green);
-            }
+<div class="content">
 
-            /* Table Styling */
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 0.92rem;
-            }
-            th {
-                text-align: left;
-                padding: 12px 14px;
-                background: var(--porcelain);
-                color: var(--granny-smith);
-                font-size: 0.7rem;
-                text-transform: uppercase;
-            }
-            td {
-                padding: 12px 14px;
-                border-bottom: 1px solid var(--porcelain);
-                vertical-align: top;
-                word-break: break-word;
-            }
+<!-- ══════════════════════════ OVERVIEW ══════════════════════════ -->
+<div class="panel active" id="p-overview">
+  <div class="section-lbl">Executive Summary — March 2026</div>
 
-            /* Funnel & Bar Visuals */
-            .bar-container {
-                margin-bottom: 8px;
-            }
-            .bar-header {
-                display: flex;
-                justify-content: space-between;
-                font-size: 0.75rem;
-                margin-bottom: 2px;
-            }
-            .bar-bg {
-                background: var(--porcelain);
-                height: 10px;
-                border-radius: 10px;
-            }
-            .bar-fill {
-                height: 100%;
-                border-radius: 10px;
-            }
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="kpi or"><div class="kpi-lbl">Total Revenue</div><div class="kpi-val">$84.2K</div><div class="kpi-sub">Target $78K</div><span class="kpi-badge up">↑ 18.4% MoM</span></div>
+    <div class="kpi gr"><div class="kpi-lbl">Total Leads</div><div class="kpi-val">1,248</div><div class="kpi-sub">Target 1,100</div><span class="kpi-badge up">↑ 12.1%</span></div>
+    <div class="kpi nv"><div class="kpi-lbl">Ad Spend</div><div class="kpi-val">$12.4K</div><div class="kpi-sub">Budget $13K</div><span class="kpi-badge up">Under budget</span></div>
+    <div class="kpi bl"><div class="kpi-lbl">Blended ROAS</div><div class="kpi-val">6.79x</div><div class="kpi-sub">Target 5.5x</div><span class="kpi-badge up">↑ 0.81x</span></div>
+    <div class="kpi nv"><div class="kpi-lbl">Blended CAC</div><div class="kpi-val">$9.94</div><div class="kpi-sub">Target &lt;$12</div><span class="kpi-badge up">↓ $1.26</span></div>
+  </div>
 
-            /* Pipeline Tracker */
-            .pipeline-flex {
-                display: flex;
-                justify-content: space-between;
-                gap: 14px;
-            }
-            .pipeline-item {
-                flex: 1;
-                min-width: 0;
-                padding: 16px 12px;
-                background: var(--porcelain);
-                border-radius: 4px;
-                text-align: center;
-            }
-            .pipeline-val {
-                display: block;
-                font-weight: 900;
-                font-size: 1.7rem;
-                color: var(--daintree);
-            }
-            .pipeline-lbl {
-                display: block;
-                font-size: 0.68rem;
-                color: var(--granny-smith);
-                text-transform: uppercase;
-                margin-top: 2px;
-                white-space: normal;
-                word-break: break-word;
-                line-height: 1.25;
-            }
-            .pipeline-sub {
-                display: block;
-                font-size: 0.78rem;
-                color: var(--picton-blue);
-                font-weight: 700;
-                white-space: normal;
-                line-height: 1.25;
-            }
-            .green-text {
-                color: var(--harlequin-green) !important;
-            }
+  <div class="kpi-row" style="grid-template-columns:repeat(6,1fr);margin-top:-4px">
+    <div class="kpi or"><div class="kpi-lbl">Impressions</div><div class="kpi-val" style="font-size:20px">2.18M</div><div class="kpi-sub">↑ 9.2% MoM</div></div>
+    <div class="kpi bl"><div class="kpi-lbl">Overall CTR</div><div class="kpi-val" style="font-size:20px">3.42%</div><div class="kpi-sub">Bench 2.5%</div></div>
+    <div class="kpi or"><div class="kpi-lbl">Email Open Rate</div><div class="kpi-val" style="font-size:20px">27.8%</div><div class="kpi-sub">↑ 2.1pp MoM</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">LI Eng. Rate</div><div class="kpi-val" style="font-size:20px">4.61%</div><div class="kpi-sub">Bench 3%</div></div>
+    <div class="kpi nv"><div class="kpi-lbl">Deals Closed (B2B)</div><div class="kpi-val" style="font-size:20px">23</div><div class="kpi-sub">Target 20</div></div>
+    <div class="kpi rd"><div class="kpi-lbl">Purchase CVR (B2C)</div><div class="kpi-val" style="font-size:20px">2.87%</div><div class="kpi-sub">Target 3%</div></div>
+  </div>
 
-            /* Marketing Tab */
-            .marketing-funnel-card {
-                padding: 18px;
-            }
-            .marketing-funnel-header {
-                display: flex;
-                justify-content: space-between;
-                gap: 14px;
-                align-items: flex-start;
-                margin-bottom: 10px;
-                flex-wrap: wrap;
-            }
-            .marketing-funnel-header h2 {
-                margin-bottom: 4px;
-            }
-            .marketing-note {
-                font-size: 0.84rem;
-                color: var(--granny-smith);
-                max-width: 520px;
-            }
-            .hero-metric {
-                min-width: 150px;
-                border: 1px solid var(--porcelain);
-                border-radius: 4px;
-                padding: 12px 14px;
-                background: var(--white);
-            }
-            .hero-metric .kpi-value {
-                display: block;
-                margin-top: 2px;
-            }
-            .visual-funnel {
-                margin-top: 8px;
-            }
-            .funnel-step {
-                margin: 0 auto 8px;
-                color: var(--white);
-                text-align: center;
-                padding: 18px 22px;
-                font-weight: 700;
-                line-height: 1.25;
-                box-shadow: var(--shadow);
-            }
-            .funnel-step .step-title {
-                display: block;
-                font-size: 0.92rem;
-                text-transform: uppercase;
-                margin-bottom: 4px;
-            }
-            .funnel-step .step-value {
-                display: block;
-                font-size: 1.7rem;
-                font-weight: 900;
-                margin-bottom: 2px;
-            }
-            .funnel-step .step-meta {
-                display: block;
-                font-size: 0.72rem;
-                font-weight: 400;
-                opacity: 0.95;
-            }
-            .funnel-step.top {
-                width: 100%;
-                background: #ff5900;
-            }
-            .funnel-step.second {
-                width: 84%;
-                background: #ff6b1a;
-            }
-            .funnel-step.third {
-                width: 64%;
-                background: #ff7f3a;
-            }
-            .funnel-step.fourth {
-                width: 46%;
-                background: #ff9359;
-            }
-            .funnel-step.bottom {
-                width: 28%;
-                background: #ffac7d;
-            }
-            .funnel-step.ads-top {
-                width: 100%;
-                background: #002c3e;
-            }
-            .funnel-step.ads-second {
-                width: 78%;
-                background: #124b69;
-            }
-            .funnel-step.ads-third {
-                width: 58%;
-                background: #2a79aa;
-            }
-            .funnel-step.ads-fourth {
-                width: 38%;
-                background: #3aabef;
-            }
-            .funnel-step.ads-bottom {
-                width: 24%;
-                background: #25c105;
-            }
-            .funnel-step.org-top {
-                width: 100%;
-                background: #1f5a3f;
-            }
-            .funnel-step.org-second {
-                width: 80%;
-                background: #2f7c56;
-            }
-            .funnel-step.org-third {
-                width: 60%;
-                background: #4f9d74;
-            }
-            .funnel-step.org-fourth {
-                width: 42%;
-                background: #71ba8f;
-            }
-            .funnel-step.org-bottom {
-                width: 28%;
-                background: #99d0b0;
-            }
-            .drop-note {
-                text-align: center;
-                font-size: 0.7rem;
-                color: var(--granny-smith);
-                margin: 2px 0 6px;
-                font-weight: 700;
-            }
-            .support-grid {
-                display: grid;
-                grid-template-columns: repeat(5, 1fr);
-                gap: 14px;
-                margin-top: 12px;
-            }
-            .support-card {
-                border: 1px solid var(--porcelain);
-                border-radius: 10px;
-                padding: 14px 16px;
-                background: var(--white);
-            }
-            .support-card .kpi-value {
-                display: block;
-                margin: 3px 0;
-            }
-            .support-sub {
-                font-size: 0.72rem;
-                color: var(--granny-smith);
-            }
-            .content-list {
-                padding-left: 18px;
-                font-size: 0.92rem;
-                color: var(--daintree);
-                line-height: 1.6;
-            }
-            .content-list li + li {
-                margin-top: 4px;
-            }
-            .funnel-grid {
-                display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 12px;
-                margin-bottom: 18px;
-            }
-            .compact-funnel-card {
-                padding: 12px;
-            }
-            .compact-funnel-card .hero-metric {
-                min-width: 132px;
-                padding: 7px 9px;
-            }
-            .compact-funnel .funnel-step {
-                padding: 9px 12px;
-                margin-bottom: 5px;
-                box-shadow: none;
-            }
-            .compact-funnel .step-title {
-                font-size: 0.62rem;
-                margin-bottom: 2px;
-            }
-            .compact-funnel .step-value {
-                font-size: 1.15rem;
-                margin-bottom: 0;
-            }
-            .compact-funnel .step-meta {
-                font-size: 0.7rem;
-            }
-            .compact-funnel .drop-note {
-                font-size: 0.62rem;
-                margin: 1px 0 4px;
-            }
-            .mini-support-grid {
-                display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: 8px;
-                margin-top: 10px;
-            }
-            .mini-support {
-                border: 1px solid var(--porcelain);
-                border-radius: 8px;
-                padding: 10px 12px;
-                background: var(--white);
-            }
-            .mini-support .kpi-label {
-                font-size: 0.58rem;
-            }
-            .mini-support .kpi-value {
-                font-size: 1rem;
-                display: block;
-                margin: 2px 0;
-            }
-            .mini-support .support-sub {
-                font-size: 0.66rem;
-            }
-            @media (max-width: 1200px) {
-                .funnel-grid {
-                    grid-template-columns: 1fr;
-                }
-                .mini-support-grid {
-                    grid-template-columns: repeat(3, minmax(0, 1fr));
-                }
-            }
-            @media (max-width: 1100px) {
-                .support-grid {
-                    grid-template-columns: repeat(3, 1fr);
-                }
-            }
-            @media (max-width: 1024px) {
-                .kpi-strip {
-                    grid-template-columns: repeat(3, 1fr);
-                }
-                .module-nav {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-            }
-            @media (max-width: 768px) {
-                .support-grid,
-                .grid-row,
-                .mini-support-grid {
-                    grid-template-columns: 1fr;
-                }
-                .funnel-step.top,
-                .funnel-step.second,
-                .funnel-step.third,
-                .funnel-step.fourth,
-                .funnel-step.bottom,
-                .funnel-step.ads-top,
-                .funnel-step.ads-second,
-                .funnel-step.ads-third,
-                .funnel-step.ads-fourth,
-                .funnel-step.ads-bottom,
-                .funnel-step.org-top,
-                .funnel-step.org-second,
-                .funnel-step.org-third,
-                .funnel-step.org-fourth,
-                .funnel-step.org-bottom {
-                    width: 100%;
-                }
-            }
-            @media (max-width: 1100px) {
-                .support-grid {
-                    grid-template-columns: repeat(4, 1fr);
-                }
-            }
-            @media (max-width: 1024px) {
-                .kpi-strip {
-                    grid-template-columns: repeat(3, 1fr);
-                }
-                .module-nav {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-            }
-            @media (max-width: 768px) {
-                .support-grid,
-                .grid-row {
-                    grid-template-columns: 1fr;
-                }
-                .funnel-step.top,
-                .funnel-step.second,
-                .funnel-step.third,
-                .funnel-step.fourth,
-                .funnel-step.bottom,
-                .funnel-step.ads-top,
-                .funnel-step.ads-second,
-                .funnel-step.ads-third,
-                .funnel-step.ads-fourth,
-                .funnel-step.ads-bottom {
-                    width: 100%;
-                }
-            }
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Revenue Trend — Jan to Mar 2026</div>
+      <div class="card-sub">Actual vs Target · All Channels</div>
+      <canvas id="c-rev-trend" height="195"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Revenue by Channel — Mar 2026</div>
+      <div class="card-sub">Paid + email + organic mix</div>
+      <canvas id="c-rev-mix" height="195"></canvas>
+    </div>
+  </div>
 
-            /* Badges */
-            .status-pill {
-                padding: 2px 6px;
-                border-radius: 10px;
-                font-size: 0.7rem;
-                font-weight: 900;
-                text-transform: uppercase;
-            }
-            .bg-green {
-                background: #e8f5e9;
-                color: var(--harlequin-green);
-            }
-            .bg-blue {
-                background: #e3f2fd;
-                color: var(--picton-blue);
-            }
-            .bg-grey {
-                background: #eeeeee;
-                color: var(--granny-smith);
-            }
-        </style>
-    </head>
-    <body>
-        <div class="dashboard-wrapper">
-            <header>
-                <div class="brand-box">
-                    <h1>Market Access Direct</h1>
-                    <span>Executive Performance Dashboard | Q2 2026</span>
-                </div>
-            </header>
+  <div class="grid-eq">
+    <div class="card">
+      <div class="card-title">Leads by Channel — Mar 2026</div>
+      <div class="card-sub">MQL vs SQL comparison</div>
+      <canvas id="c-leads-ch" height="195"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Ad Spend vs Leads — Weekly</div>
+      <div class="card-sub">Spend efficiency · Wk1–Wk4</div>
+      <canvas id="c-spend-leads" height="195"></canvas>
+    </div>
+  </div>
 
-            <div class="kpi-strip">
-                <div class="kpi-card">
-                    <span class="kpi-label">Leads Generated</span
-                    ><span class="kpi-value">38,420</span>
-                </div>
-                <div class="kpi-card">
-                    <span class="kpi-label">Meetings Held</span
-                    ><span class="kpi-value"
-                        >176
-                        <small
-                            style="
-                                font-size: 0.7rem;
-                                color: var(--granny-smith);
-                            "
-                            >of 214</small
-                        ></span
-                    >
-                </div>
-                <div class="kpi-card">
-                    <span class="kpi-label">Deals Open</span
-                    ><span class="kpi-value">67</span>
-                </div>
-                <div class="kpi-card active-metric">
-                    <span class="kpi-label">Revenue Closed</span
-                    ><span class="kpi-value">$318.5K</span>
-                </div>
-                <div class="kpi-card">
-                    <span class="kpi-label">Overall Conv.</span
-                    ><span class="kpi-value">1.73%</span>
-                </div>
-                <div class="kpi-card">
-                    <span class="kpi-label">Blended CAC</span
-                    ><span class="kpi-value">$412</span>
-                </div>
-            </div>
+  <div class="section-lbl">Full KPI Scorecard</div>
+  <div class="card full">
+    <div class="card-title">KPI Scorecard — March 2026</div>
+    <div class="card-sub">Target vs Actual with achievement rate</div>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>KPI</th><th>Channel</th><th class="num">Target</th><th class="num">Actual</th>
+          <th>Achievement</th><th class="num">vs Last Month</th><th>Status</th>
+        </tr></thead>
+        <tbody id="scorecard-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-            <nav class="module-nav">
-                <div class="nav-item active" data-mod="summary">
-                    <b>Aggregate Summary</b><small>High Level Rollup</small>
-                </div>
-                <div class="nav-item" data-mod="sales">
-                    <b>Sales Funnel</b><small>Outreach & Campaigns</small>
-                </div>
-                <div class="nav-item" data-mod="partners">
-                    <b>Strategic Partners</b
-                    ><small>Partner Relationships</small>
-                </div>
-                <div class="nav-item" data-mod="marketing">
-                    <b>Marketing</b><small>Email, Ads & Comparison</small>
-                </div>
-            </nav>
+<!-- ══════════════════════════ MARKETING ══════════════════════════ -->
+<div class="panel" id="p-marketing">
+  <div class="section-lbl">LinkedIn Organic — March 2026</div>
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="kpi bl"><div class="kpi-lbl">Impressions</div><div class="kpi-val">148.4K</div><div class="kpi-sub">Target 130K</div><span class="kpi-badge up">↑ 11%</span></div>
+    <div class="kpi bl"><div class="kpi-lbl">Engagement Rate</div><div class="kpi-val">4.61%</div><div class="kpi-sub">Bench 3%</div><span class="kpi-badge up">↑ 0.5pp</span></div>
+    <div class="kpi bl"><div class="kpi-lbl">Clicks</div><div class="kpi-val">6,842</div><div class="kpi-sub">↑ 8.3% MoM</div><span class="kpi-badge up">↑ 525</span></div>
+    <div class="kpi bl"><div class="kpi-lbl">Followers Gained</div><div class="kpi-val">+312</div><div class="kpi-sub">Target +250</div><span class="kpi-badge up">↑ 25%</span></div>
+    <div class="kpi bl"><div class="kpi-lbl">Posts Published</div><div class="kpi-val">18</div><div class="kpi-sub">Target 16+</div><span class="kpi-badge up">On Plan</span></div>
+  </div>
 
-            <main id="summary" class="module-content active">
-                <div class="grid-row">
-                    <div class="card col-8">
-                        <h2>Blended Conversion Funnel</h2>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>Lead Universe</span><span>38,420</span>
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 100%;
-                                        background: var(--picton-blue);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>Active Outreach</span
-                                ><span
-                                    >22,180
-                                    <small style="color: var(--picton-blue)"
-                                        >57.7%</small
-                                    ></span
-                                >
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 57.7%;
-                                        background: var(--picton-blue);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>Engaged Contacts</span
-                                ><span
-                                    >4,340
-                                    <small style="color: var(--int-orange)"
-                                        >19.6%</small
-                                    ></span
-                                >
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 19.6%;
-                                        background: var(--int-orange);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>Demos / Trials</span
-                                ><span
-                                    >642
-                                    <small style="color: var(--int-orange)"
-                                        >14.8%</small
-                                    ></span
-                                >
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 14.8%;
-                                        background: var(--int-orange);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>Converted Customers</span
-                                ><span
-                                    >214
-                                    <small style="color: var(--harlequin-green)"
-                                        >33.3%</small
-                                    ></span
-                                >
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 33.3%;
-                                        background: var(--harlequin-green);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card col-4">
-                        <h2>Financial Efficiency Summary</h2>
-                        <div class="grid-row" style="margin-bottom: 10px">
-                            <div class="col-6">
-                                <span class="kpi-label">Total Spend</span
-                                ><span
-                                    class="kpi-value"
-                                    style="color: var(--int-orange)"
-                                    >$41,600</span
-                                >
-                            </div>
-                            <div class="col-6">
-                                <span class="kpi-label">Blended CAC</span
-                                ><span
-                                    class="kpi-value"
-                                    style="color: var(--int-orange)"
-                                    >$412</span
-                                >
-                            </div>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>Events</span><span>$22k (52.9%)</span>
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 52.9%;
-                                        background: var(--int-orange);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>LinkedIn</span><span>$11.4k (27.4%)</span>
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 27.4%;
-                                        background: var(--picton-blue);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card col-12">
-                    <h2>Channel Performance — All Sources</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Channel</th>
-                                <th>Leads</th>
-                                <th>Meetings</th>
-                                <th>Deals</th>
-                                <th>Rev. Closed</th>
-                                <th>Conv. Rate</th>
-                                <th>Spend</th>
-                                <th>Cost/Lead</th>
-                                <th>ROI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><b>Website</b></td>
-                                <td>12,840</td>
-                                <td>48</td>
-                                <td>14</td>
-                                <td>$42,000</td>
-                                <td>0.37%</td>
-                                <td>$8,200</td>
-                                <td>$0.64</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >5.1x</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>LinkedIn</b></td>
-                                <td>9,680</td>
-                                <td>62</td>
-                                <td>18</td>
-                                <td>$67,500</td>
-                                <td>0.64%</td>
-                                <td>$11,400</td>
-                                <td>$1.18</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >5.9x</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Events</b></td>
-                                <td>3,260</td>
-                                <td>44</td>
-                                <td>19</td>
-                                <td>$90,250</td>
-                                <td>1.35%</td>
-                                <td>$22,000</td>
-                                <td>$6.75</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >4.1x</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Strategic Partners</b></td>
-                                <td>12,640</td>
-                                <td>60</td>
-                                <td>16</td>
-                                <td>$118,750</td>
-                                <td>3.47%</td>
-                                <td>$0</td>
-                                <td>$0.00</td>
-                                <td>
-                                    <span class="status-pill bg-blue">∞</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
+  <div class="section-lbl">Email Campaigns</div>
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="kpi or"><div class="kpi-lbl">Open Rate</div><div class="kpi-val">27.8%</div><div class="kpi-sub">Bench 22%</div><span class="kpi-badge up">↑ 2.1pp</span></div>
+    <div class="kpi or"><div class="kpi-lbl">CTR</div><div class="kpi-val">4.12%</div><div class="kpi-sub">Bench 2.5%</div><span class="kpi-badge up">↑ 0.4pp</span></div>
+    <div class="kpi or"><div class="kpi-lbl">Emails Sent</div><div class="kpi-val">24.8K</div><div class="kpi-sub">↑ 3K MoM</div><span class="kpi-badge up">↑ 14%</span></div>
+    <div class="kpi or"><div class="kpi-lbl">Conversions</div><div class="kpi-val">486</div><div class="kpi-sub">Target 420</div><span class="kpi-badge up">↑ 16%</span></div>
+    <div class="kpi gr"><div class="kpi-lbl">Unsub Rate</div><div class="kpi-val">0.28%</div><div class="kpi-sub">Bench &lt;0.5%</div><span class="kpi-badge up">↓ 0.06pp</span></div>
+  </div>
 
-            <main id="sales" class="module-content mod-sales">
-                <div class="grid-row">
-                    <div class="card col-4">
-                        <h2>Cost Through Funnel</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Stage</th>
-                                    <th>Unit Cost</th>
-                                    <th>Notes</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>List / Data</td>
-                                    <td><b>$4,200</b></td>
-                                    <td>One-time purchase</td>
-                                </tr>
-                                <tr>
-                                    <td>Email Platform</td>
-                                    <td><b>$980/mo</b></td>
-                                    <td>Sending + automation</td>
-                                </tr>
-                                <tr>
-                                    <td>Cost Per Engaged</td>
-                                    <td><b>$1.23</b></td>
-                                    <td>CPE blended</td>
-                                </tr>
-                                <tr>
-                                    <td>Cost Per Demo</td>
-                                    <td><b>$8.28</b></td>
-                                    <td>Per free trial</td>
-                                </tr>
-                                <tr>
-                                    <td>Cost Per Buyer</td>
-                                    <td><b>$55.80</b></td>
-                                    <td>Email channel only</td>
-                                </tr>
-                                <tr>
-                                    <td>Revenue / Buyer</td>
-                                    <td><b>$974</b></td>
-                                    <td>Avg LTV Y1</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="card col-8 marketing-funnel-card">
-                        <div class="marketing-funnel-header">
-                            <div>
-                                <h2>Visual Conversion Flow</h2>
-                                <div class="marketing-note">
-                                    Restored sales funnel view for outbound
-                                    performance.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="visual-funnel compact-funnel">
-                            <div class="funnel-step top">
-                                <span class="step-title">Prospect Universe</span
-                                ><span class="step-value">38,420</span>
-                            </div>
-                            <div class="funnel-step second">
-                                <span class="step-title">Emails Sent</span
-                                ><span class="step-value">22,180</span>
-                            </div>
-                            <div class="funnel-step third">
-                                <span class="step-title">Engaged</span
-                                ><span class="step-value">4,340</span>
-                            </div>
-                            <div class="funnel-step fourth">
-                                <span class="step-title">Demo / Trial</span
-                                ><span class="step-value">642</span>
-                            </div>
-                            <div class="funnel-step bottom">
-                                <span class="step-title">Converted</span
-                                ><span class="step-value">214</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card col-12">
-                    <h2>
-                        Campaign Performance
-                        <span
-                            class="status-pill bg-green"
-                            style="margin-left: 10px"
-                            >Q2 Active</span
-                        >
-                    </h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Campaign</th>
-                                <th>Audience</th>
-                                <th>Emails Sent</th>
-                                <th>Click Rate</th>
-                                <th>Trial Signups</th>
-                                <th>Conversions</th>
-                                <th>Revenue</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><b>Q2 Independent Agents</b></td>
-                                <td>IA / Small Agency</td>
-                                <td>8,400</td>
-                                <td>24.1%</td>
-                                <td>298</td>
-                                <td>98</td>
-                                <td>$92,050</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >Active</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Agency Growth Series</b></td>
-                                <td>Mid-Market Agency</td>
-                                <td>5,200</td>
-                                <td>19.8%</td>
-                                <td>184</td>
-                                <td>64</td>
-                                <td>$68,800</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >Active</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Reactivation — Lapsed</b></td>
-                                <td>Prior Contacts</td>
-                                <td>3,100</td>
-                                <td>18.4%</td>
-                                <td>94</td>
-                                <td>28</td>
-                                <td>$28,700</td>
-                                <td>
-                                    <span class="status-pill bg-blue"
-                                        >Running</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Event Follow-Up</b></td>
-                                <td>Event Attendees</td>
-                                <td>1,540</td>
-                                <td>31.2%</td>
-                                <td>40</td>
-                                <td>15</td>
-                                <td>$10,200</td>
-                                <td>
-                                    <span class="status-pill bg-grey"
-                                        >Complete</span
-                                    >
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
+  <div class="section-lbl">Paid Advertising</div>
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="kpi nv"><div class="kpi-lbl">Total Spend</div><div class="kpi-val">$12.4K</div><div class="kpi-sub">Budget $13K</div><span class="kpi-badge up">Under budget</span></div>
+    <div class="kpi gr"><div class="kpi-lbl">ROAS</div><div class="kpi-val">6.79x</div><div class="kpi-sub">Target 5.5x</div><span class="kpi-badge up">↑ 0.81x</span></div>
+    <div class="kpi or"><div class="kpi-lbl">CPL (Blended)</div><div class="kpi-val">$9.94</div><div class="kpi-sub">Target &lt;$12</div><span class="kpi-badge up">↓ $1.26</span></div>
+    <div class="kpi bl"><div class="kpi-lbl">CPC (Blended)</div><div class="kpi-val">$1.42</div><div class="kpi-sub">↓ $0.18 MoM</div><span class="kpi-badge up">Improving</span></div>
+    <div class="kpi nv"><div class="kpi-lbl">Paid Leads</div><div class="kpi-val">1,248</div><div class="kpi-sub">Target 1,100</div><span class="kpi-badge up">↑ 13%</span></div>
+  </div>
 
-            <main id="marketing" class="module-content mod-sales">
-                <div class="funnel-grid">
-                    <div class="card compact-funnel-card">
-                        <div class="marketing-funnel-header">
-                            <div>
-                                <h2>Email Funnel</h2>
-                                <div class="marketing-note">
-                                    Top funnel to 100k emails sent, then opens,
-                                    clicks, and converted demo.
-                                </div>
-                            </div>
-                            <div class="hero-metric">
-                                <span class="kpi-label">Demo Yield</span>
-                                <span
-                                    class="kpi-value"
-                                    style="color: var(--int-orange)"
-                                    >1.25%</span
-                                >
-                            </div>
-                        </div>
-                        <div class="visual-funnel compact-funnel">
-                            <div class="funnel-step top">
-                                <span class="step-title">Top Funnel</span
-                                ><span class="step-value">140,000</span>
-                            </div>
-                            <div class="drop-note">28.6% drop</div>
-                            <div class="funnel-step second">
-                                <span class="step-title">Emails Sent</span
-                                ><span class="step-value">100,000</span>
-                            </div>
-                            <div class="drop-note">68.0% drop</div>
-                            <div class="funnel-step third">
-                                <span class="step-title">Opens</span
-                                ><span class="step-value">32,000</span>
-                            </div>
-                            <div class="drop-note">73.4% drop</div>
-                            <div class="funnel-step fourth">
-                                <span class="step-title">Clicks</span
-                                ><span class="step-value">8,500</span>
-                            </div>
-                            <div class="drop-note">85.3% drop</div>
-                            <div class="funnel-step bottom">
-                                <span class="step-title">Converted Demo</span
-                                ><span class="step-value">1,250</span>
-                            </div>
-                        </div>
-                        <div class="mini-support-grid">
-                            <div class="mini-support">
-                                <span class="kpi-label">Open Rate</span
-                                ><span
-                                    class="kpi-value"
-                                    style="color: var(--int-orange)"
-                                    >32.0%</span
-                                ><span class="support-sub">32k opens</span>
-                            </div>
-                            <div class="mini-support">
-                                <span class="kpi-label">CTR</span
-                                ><span
-                                    class="kpi-value"
-                                    style="color: var(--int-orange)"
-                                    >8.5%</span
-                                ><span class="support-sub">8.5k clicks</span>
-                            </div>
-                            <div class="mini-support">
-                                <span class="kpi-label">Revenue</span
-                                ><span class="kpi-value green-text"
-                                    >$199,750</span
-                                ><span class="support-sub">closed</span>
-                            </div>
-                        </div>
-                    </div>
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">LinkedIn — Impressions by Content Type</div>
+      <div class="card-sub">Monthly breakdown</div>
+      <canvas id="c-li-post" height="220"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Email — Open Rate vs CTR Trend</div>
+      <div class="card-sub">4-week rolling · Mar 2026</div>
+      <canvas id="c-email-trend" height="220"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Paid Ads — ROAS by Platform</div>
+      <div class="card-sub">Mar 2026</div>
+      <canvas id="c-roas-plat" height="220"></canvas>
+    </div>
+  </div>
 
-                    <div class="card compact-funnel-card">
-                        <div class="marketing-funnel-header">
-                            <div>
-                                <h2>Ads Funnel</h2>
-                                <div class="marketing-note">
-                                    Paid media funnel from impressions through
-                                    converted customer.
-                                </div>
-                            </div>
-                            <div class="hero-metric">
-                                <span class="kpi-label">Customer Yield</span>
-                                <span
-                                    class="kpi-value"
-                                    style="color: var(--picton-blue)"
-                                    >0.02%</span
-                                >
-                            </div>
-                        </div>
-                        <div class="visual-funnel compact-funnel">
-                            <div class="funnel-step ads-top">
-                                <span class="step-title">Impressions</span
-                                ><span class="step-value">1,200,000</span>
-                            </div>
-                            <div class="drop-note">97.0% drop</div>
-                            <div class="funnel-step ads-second">
-                                <span class="step-title">Click & Engage</span
-                                ><span class="step-value">36,000</span>
-                            </div>
-                            <div class="drop-note">48.6% drop</div>
-                            <div class="funnel-step ads-third">
-                                <span class="step-title">Landing Visits</span
-                                ><span class="step-value">18,500</span>
-                            </div>
-                            <div class="drop-note">88.6% drop</div>
-                            <div class="funnel-step ads-fourth">
-                                <span class="step-title">Trial / Demo</span
-                                ><span class="step-value">2,100</span>
-                            </div>
-                            <div class="drop-note">87.6% drop</div>
-                            <div class="funnel-step ads-bottom">
-                                <span class="step-title">Converted</span
-                                ><span class="step-value">260</span>
-                            </div>
-                        </div>
-                        <div class="mini-support-grid">
-                            <div class="mini-support">
-                                <span class="kpi-label">CTR</span
-                                ><span
-                                    class="kpi-value"
-                                    style="color: var(--picton-blue)"
-                                    >3.0%</span
-                                ><span class="support-sub">engaged</span>
-                            </div>
-                            <div class="mini-support">
-                                <span class="kpi-label">Spend</span
-                                ><span
-                                    class="kpi-value"
-                                    style="color: var(--int-orange)"
-                                    >$148,000</span
-                                ><span class="support-sub">paid media</span>
-                            </div>
-                            <div class="mini-support">
-                                <span class="kpi-label">CAC</span
-                                ><span
-                                    class="kpi-value"
-                                    style="color: var(--int-orange)"
-                                    >$569</span
-                                ><span class="support-sub">per customer</span>
-                            </div>
-                        </div>
-                    </div>
+  <div class="section-lbl">Platform Breakdown</div>
+  <div class="card full">
+    <div class="card-title">Paid Advertising — Platform Summary</div>
+    <div class="card-sub">March 2026 · All platforms</div>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>Platform</th><th class="num">Spend</th><th class="num">Impressions</th>
+          <th class="num">Clicks</th><th class="num">CTR</th><th class="num">Leads</th>
+          <th class="num">Revenue</th><th class="num">ROAS</th><th class="num">CPL</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><strong>Meta Ads</strong></td><td class="num">$5,200</td><td class="num">980,000</td><td class="num">38,200</td><td class="num">3.90%</td><td class="num">524</td><td class="num">$36,400</td><td class="num pos">7.00x</td><td class="num">$9.92</td></tr>
+          <tr><td><strong>Google Ads</strong></td><td class="num">$4,100</td><td class="num">620,000</td><td class="num">22,100</td><td class="num">3.57%</td><td class="num">368</td><td class="num">$26,200</td><td class="num pos">6.39x</td><td class="num">$11.14</td></tr>
+          <tr><td><strong>LinkedIn Ads</strong></td><td class="num">$2,400</td><td class="num">310,000</td><td class="num">8,060</td><td class="num">2.60%</td><td class="num">248</td><td class="num">$17,200</td><td class="num pos">7.17x</td><td class="num">$9.68</td></tr>
+          <tr><td><strong>YouTube Ads</strong></td><td class="num">$700</td><td class="num">270,000</td><td class="num">5,940</td><td class="num">2.20%</td><td class="num">108</td><td class="num">$4,400</td><td class="num pos">6.29x</td><td class="num">$6.48</td></tr>
+          <tr class="total"><td>TOTAL</td><td class="num">$12,400</td><td class="num">2,180,000</td><td class="num">74,300</td><td class="num">3.42%</td><td class="num">1,248</td><td class="num">$84,200</td><td class="num pos">6.79x</td><td class="num">$9.94</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-                    <div class="card compact-funnel-card">
-                        <div class="marketing-funnel-header">
-                            <div>
-                                <h2>Organic Funnel</h2>
-                                <div class="marketing-note">
-                                    Organic pipeline from search and content
-                                    reach to qualified opportunity.
-                                </div>
-                            </div>
-                            <div class="hero-metric">
-                                <span class="kpi-label">Opportunity Yield</span>
-                                <span class="kpi-value green-text">0.08%</span>
-                            </div>
-                        </div>
-                        <div class="visual-funnel compact-funnel">
-                            <div class="funnel-step org-top">
-                                <span class="step-title">Organic Reach</span
-                                ><span class="step-value">420,000</span>
-                            </div>
-                            <div class="drop-note">86.2% drop</div>
-                            <div class="funnel-step org-second">
-                                <span class="step-title">Website Visits</span
-                                ><span class="step-value">58,000</span>
-                            </div>
-                            <div class="drop-note">71.6% drop</div>
-                            <div class="funnel-step org-third">
-                                <span class="step-title">Qualified Leads</span
-                                ><span class="step-value">16,500</span>
-                            </div>
-                            <div class="drop-note">85.2% drop</div>
-                            <div class="funnel-step org-fourth">
-                                <span class="step-title">Meetings Booked</span
-                                ><span class="step-value">2,450</span>
-                            </div>
-                            <div class="drop-note">86.1% drop</div>
-                            <div class="funnel-step org-bottom">
-                                <span class="step-title"
-                                    >Qualified Opportunity</span
-                                ><span class="step-value">340</span>
-                            </div>
-                        </div>
-                        <div class="mini-support-grid">
-                            <div class="mini-support">
-                                <span class="kpi-label">Lead Rate</span
-                                ><span class="kpi-value green-text">28.4%</span
-                                ><span class="support-sub"
-                                    >visits to leads</span
-                                >
-                            </div>
-                            <div class="mini-support">
-                                <span class="kpi-label">Meetings</span
-                                ><span
-                                    class="kpi-value"
-                                    style="color: var(--picton-blue)"
-                                    >2,450</span
-                                ><span class="support-sub">booked</span>
-                            </div>
-                            <div class="mini-support">
-                                <span class="kpi-label">Spend</span
-                                ><span class="kpi-value green-text">$8,200</span
-                                ><span class="support-sub">SEO + content</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- ══════════════════════════ SALES FUNNEL ══════════════════════════ -->
+<div class="panel" id="p-sales">
+  <div class="section-lbl">Sales Funnel — March 2026</div>
 
-                <div class="card col-12">
-                    <h2>Overall Marketing</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Motion</th>
-                                <th>Audience / Outreach</th>
-                                <th>Leads Generated</th>
-                                <th>Conversion Rate</th>
-                                <th>Meetings</th>
-                                <th>Deals Active</th>
-                                <th>Revenue Closed</th>
-                                <th>Spend</th>
-                                <th>CAC</th>
-                                <th>ROI</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><b>Email</b></td>
-                                <td>100,000 sent</td>
-                                <td>8,500</td>
-                                <td>1.25%</td>
-                                <td>51</td>
-                                <td>24</td>
-                                <td>$199,750</td>
-                                <td>$11,760</td>
-                                <td>$55.80</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >16.0x</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Ads</b></td>
-                                <td>1,200,000 impressions</td>
-                                <td>36,000</td>
-                                <td>0.72%</td>
-                                <td>64</td>
-                                <td>31</td>
-                                <td>$312,000</td>
-                                <td>$148,000</td>
-                                <td>$569</td>
-                                <td>
-                                    <span class="status-pill bg-blue"
-                                        >2.1x</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Organic</b></td>
-                                <td>58,000 visits</td>
-                                <td>16,500</td>
-                                <td>0.81%</td>
-                                <td>34</td>
-                                <td>12</td>
-                                <td>$54,600</td>
-                                <td>$8,200</td>
-                                <td>$241</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >6.7x</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Website</b></td>
-                                <td>12,840 visits</td>
-                                <td>12,840</td>
-                                <td>0.37%</td>
-                                <td>48</td>
-                                <td>14</td>
-                                <td>$42,000</td>
-                                <td>$8,200</td>
-                                <td>$586</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >5.1x</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>LinkedIn</b></td>
-                                <td>9,680 outreach</td>
-                                <td>9,680</td>
-                                <td>0.64%</td>
-                                <td>62</td>
-                                <td>18</td>
-                                <td>$67,500</td>
-                                <td>$11,400</td>
-                                <td>$633</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >5.9x</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Events</b></td>
-                                <td>3,260 audience</td>
-                                <td>3,260</td>
-                                <td>1.35%</td>
-                                <td>44</td>
-                                <td>19</td>
-                                <td>$90,250</td>
-                                <td>$22,000</td>
-                                <td>$1,158</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >4.1x</span
-                                    >
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
+  <div class="grid-eq">
+    <div class="card">
+      <div class="card-title">B2B Sales Funnel</div>
+      <div class="card-sub">Lead-to-close pipeline · Mar 2026</div>
+      <div id="b2b-funnel" style="margin-top:8px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">B2C Purchase Funnel</div>
+      <div class="card-sub">Session-to-purchase flow · Mar 2026</div>
+      <div id="b2c-funnel" style="margin-top:8px"></div>
+    </div>
+  </div>
 
-            <main id="partners" class="module-content mod-partners">
-                <div class="card col-12" style="margin-bottom: 12px">
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: space-between;
-                            align-items: center;
-                            margin-bottom: 10px;
-                        "
-                    >
-                        <h2>Partner Pipeline — Deal Stages</h2>
-                        <span class="status-pill bg-green"
-                            >42 Targeted Partners</span
-                        >
-                    </div>
-                    <div class="pipeline-flex">
-                        <div class="pipeline-item">
-                            <span class="pipeline-val">42</span
-                            ><span class="pipeline-lbl">Target List</span>
-                        </div>
-                        <div class="pipeline-item">
-                            <span class="pipeline-val">28</span
-                            ><span class="pipeline-lbl">Discovery</span
-                            ><span class="pipeline-sub">66.7%</span>
-                        </div>
-                        <div class="pipeline-item">
-                            <span class="pipeline-val">18</span
-                            ><span class="pipeline-lbl">Scheduled</span
-                            ><span class="pipeline-sub">64.3%</span>
-                        </div>
-                        <div class="pipeline-item">
-                            <span class="pipeline-val">11</span
-                            ><span class="pipeline-lbl">Active Conv</span
-                            ><span class="pipeline-sub">61.1%</span>
-                        </div>
-                        <div class="pipeline-item">
-                            <span class="pipeline-val">5</span
-                            ><span class="pipeline-lbl">Negotiation</span
-                            ><span class="pipeline-sub">45.5%</span>
-                        </div>
-                        <div class="pipeline-item">
-                            <span class="pipeline-val green-text">14</span
-                            ><span class="pipeline-lbl">Deals Won</span
-                            ><span class="pipeline-sub green-text">Active</span>
-                        </div>
-                    </div>
-                </div>
+  <div class="section-lbl">Conversion Rates</div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi gr"><div class="kpi-lbl">Lead → MQL</div><div class="kpi-val">41.3%</div><div class="kpi-sub">515 / 1,248</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">MQL → SQL</div><div class="kpi-val">58.2%</div><div class="kpi-sub">300 / 515</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">SQL → Demo</div><div class="kpi-val">72.4%</div><div class="kpi-sub">217 / 300</div></div>
+    <div class="kpi gr"><div class="kpi-lbl">B2B Win Rate</div><div class="kpi-val">34.8%</div><div class="kpi-sub">23 / 66 proposals</div></div>
+    <div class="kpi or"><div class="kpi-lbl">Session → View</div><div class="kpi-val">48.2%</div><div class="kpi-sub">20,630 / 42,800</div></div>
+    <div class="kpi or"><div class="kpi-lbl">View → Cart</div><div class="kpi-val">12.4%</div><div class="kpi-sub">2,558 / 20,630</div></div>
+    <div class="kpi or"><div class="kpi-lbl">Cart → Purchase</div><div class="kpi-val">58.6%</div><div class="kpi-sub">1,499 / 2,558</div></div>
+    <div class="kpi rd"><div class="kpi-lbl">Session → Purchase</div><div class="kpi-val">2.87%</div><div class="kpi-sub">Target 3.0%</div></div>
+  </div>
 
-                <div class="grid-row">
-                    <div class="card col-7">
-                        <h2>Conversion by Account Owner</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Owner</th>
-                                    <th>Mtgs</th>
-                                    <th>Active</th>
-                                    <th>Deals</th>
-                                    <th>Conv. %</th>
-                                    <th>Rev.</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><b>David R.</b></td>
-                                    <td>7</td>
-                                    <td>5</td>
-                                    <td>5</td>
-                                    <td>71.4%</td>
-                                    <td>$52,400</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Sarah M.</b></td>
-                                    <td>5</td>
-                                    <td>3</td>
-                                    <td>4</td>
-                                    <td>80.0%</td>
-                                    <td>$38,200</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Jason K.</b></td>
-                                    <td>4</td>
-                                    <td>2</td>
-                                    <td>3</td>
-                                    <td>75.0%</td>
-                                    <td>$22,150</td>
-                                </tr>
-                                <tr>
-                                    <td><b>Tyler B.</b></td>
-                                    <td>2</td>
-                                    <td>1</td>
-                                    <td>2</td>
-                                    <td>50.0%</td>
-                                    <td>$6,000</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <h2
-                            style="
-                                margin-top: 20px;
-                                border-left-color: var(--int-orange);
-                            "
-                        >
-                            Stall Risk — No Movement
-                        </h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Partner</th>
-                                    <th>Stage</th>
-                                    <th>Idle</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>NW Agents Co-op</td>
-                                    <td>
-                                        <span class="status-pill bg-blue"
-                                            >Active Conv</span
-                                        >
-                                    </td>
-                                    <td>32 Days</td>
-                                    <td>Follow up needed</td>
-                                </tr>
-                                <tr>
-                                    <td>Gulf States IA</td>
-                                    <td>
-                                        <span class="status-pill bg-grey"
-                                            >Discovery</span
-                                        >
-                                    </td>
-                                    <td>28 Days</td>
-                                    <td>Re-engage or Drop</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="card col-5">
-                        <h2>Partner Channel Economics</h2>
-                        <div class="grid-row">
-                            <div class="col-6">
-                                <span class="kpi-label"
-                                    >Avg Leads / Partner</span
-                                ><span class="kpi-value green-text">903</span>
-                            </div>
-                            <div class="col-6">
-                                <span class="kpi-label">Avg Rev / Partner</span
-                                ><span class="kpi-value green-text"
-                                    >$8,482</span
-                                >
-                            </div>
-                        </div>
-                        <hr
-                            style="
-                                border: none;
-                                border-top: 1px solid var(--porcelain);
-                                margin: 10px 0;
-                            "
-                        />
-                        <span class="kpi-label">CAC Comparison</span>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>Strategic Partners</span
-                                ><span class="green-text">$0 CAC</span>
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 2%;
-                                        background: var(--harlequin-green);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>LinkedIn</span><span>$633 CAC</span>
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 54%;
-                                        background: var(--picton-blue);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-header">
-                                <span>Events</span><span>$1,158 CAC</span>
-                            </div>
-                            <div class="bar-bg">
-                                <div
-                                    class="bar-fill"
-                                    style="
-                                        width: 100%;
-                                        background: var(--int-orange);
-                                    "
-                                ></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="grid-eq">
+    <div class="card">
+      <div class="card-title">B2B Pipeline vs Closed Won — Monthly</div>
+      <div class="card-sub">Jan–Mar 2026</div>
+      <canvas id="c-pipeline" height="210"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">B2C Stage Conversion Rates</div>
+      <div class="card-sub">Funnel drop-off analysis</div>
+      <canvas id="c-b2c-drop" height="210"></canvas>
+    </div>
+  </div>
 
-                <div class="card col-12">
-                    <h2>All Partner Accounts</h2>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Partner Name</th>
-                                <th>Owner</th>
-                                <th>Stage</th>
-                                <th>Leads</th>
-                                <th>Meetings</th>
-                                <th>Deals</th>
-                                <th>Revenue</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><b>Alliance IA Group</b></td>
-                                <td>David R.</td>
-                                <td>Active Partner</td>
-                                <td>2,140</td>
-                                <td>14</td>
-                                <td>6</td>
-                                <td>$28,500</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >Active</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Patriot FMO</b></td>
-                                <td>Sarah M.</td>
-                                <td>Active Partner</td>
-                                <td>1,880</td>
-                                <td>11</td>
-                                <td>5</td>
-                                <td>$23,750</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >Active</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Premier IA Group</b></td>
-                                <td>David R.</td>
-                                <td>Active Partner</td>
-                                <td>1,620</td>
-                                <td>9</td>
-                                <td>3</td>
-                                <td>$14,250</td>
-                                <td>
-                                    <span class="status-pill bg-green"
-                                        >Active</span
-                                    >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>TexasBroker Network</b></td>
-                                <td>Sarah M.</td>
-                                <td>Negotiation</td>
-                                <td>980</td>
-                                <td>5</td>
-                                <td>0</td>
-                                <td>--</td>
-                                <td>
-                                    <span class="status-pill bg-blue"
-                                        >Negotiating</span
-                                    >
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
-        </div>
+  <div class="section-lbl">Funnel Detail Table</div>
+  <div class="card full">
+    <div class="card-title">B2B Funnel — Monthly Breakdown</div>
+    <div class="card-sub">Jan–Mar 2026 · Stage volumes</div>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th>Stage</th><th class="num">Jan</th><th class="num">Feb</th><th class="num">Mar</th><th class="num">MoM Change</th><th>Conversion to Next</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Total Leads</strong></td><td class="num">1,064</td><td class="num">1,112</td><td class="num">1,248</td><td class="num pos">+12.1%</td><td>—</td></tr>
+          <tr><td><strong>MQLs</strong></td><td class="num">432</td><td class="num">468</td><td class="num">515</td><td class="num pos">+10.0%</td><td><span class="pill blue">41.3% of leads</span></td></tr>
+          <tr><td><strong>SQLs</strong></td><td class="num">248</td><td class="num">272</td><td class="num">300</td><td class="num pos">+10.3%</td><td><span class="pill blue">58.2% of MQLs</span></td></tr>
+          <tr><td><strong>Demos Booked</strong></td><td class="num">178</td><td class="num">196</td><td class="num">217</td><td class="num pos">+10.7%</td><td><span class="pill blue">72.4% of SQLs</span></td></tr>
+          <tr><td><strong>Proposals Sent</strong></td><td class="num">54</td><td class="num">62</td><td class="num">66</td><td class="num pos">+6.5%</td><td><span class="pill orange">30.4% of demos</span></td></tr>
+          <tr><td><strong>Closed Won</strong></td><td class="num">14</td><td class="num">19</td><td class="num">23</td><td class="num pos">+21.1%</td><td><span class="pill green">34.8% of proposals</span></td></tr>
+          <tr class="total"><td>Overall Win Rate (Lead → Close)</td><td class="num">1.32%</td><td class="num">1.71%</td><td class="num">1.84%</td><td class="num pos">+0.13pp</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-        <script>
-            document.querySelectorAll(".nav-item").forEach((item) => {
-                item.addEventListener("click", () => {
-                    document
-                        .querySelectorAll(".nav-item")
-                        .forEach((i) => i.classList.remove("active"));
-                    document
-                        .querySelectorAll(".module-content")
-                        .forEach((m) => m.classList.remove("active"));
-                    item.classList.add("active");
-                    const target = document.getElementById(item.dataset.mod);
-                    if (target) {
-                        target.classList.add("active");
-                    }
-                });
-            });
+<!-- ══════════════════════════ CREATIVES ══════════════════════════ -->
+<div class="panel" id="p-creatives">
+  <div class="section-lbl">Creative Performance — March 2026</div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi or"><div class="kpi-lbl">Creatives Tested</div><div class="kpi-val">28</div><div class="kpi-sub">Target 25+</div><span class="kpi-badge up">↑ 6 MoM</span></div>
+    <div class="kpi gr"><div class="kpi-lbl">Winners Identified</div><div class="kpi-val">7</div><div class="kpi-sub">25% hit rate</div><span class="kpi-badge up">On Track</span></div>
+    <div class="kpi bl"><div class="kpi-lbl">Best CTR (Creative)</div><div class="kpi-val">6.84%</div><div class="kpi-sub">Video · Meta</div><span class="kpi-badge up">🏆 Winner</span></div>
+    <div class="kpi nv"><div class="kpi-lbl">Avg CPL (Top 5)</div><div class="kpi-val">$7.21</div><div class="kpi-sub">↓ 27% vs avg</div><span class="kpi-badge up">Best in class</span></div>
+  </div>
 
-            document.querySelectorAll(".subtab-btn").forEach((button) => {
-                button.addEventListener("click", () => {
-                    const container = button.closest(".module-content");
-                    container
-                        .querySelectorAll(".subtab-btn")
-                        .forEach((btn) => btn.classList.remove("active"));
-                    container
-                        .querySelectorAll(".subtab-panel")
-                        .forEach((panel) => panel.classList.remove("active"));
-                    button.classList.add("active");
-                    container
-                        .querySelector(`#${button.dataset.subtab}`)
-                        .classList.add("active");
-                });
-            });
-        </script>
-    </body>
+  <div class="grid-eq">
+    <div class="card">
+      <div class="card-title">CTR by Creative Type</div>
+      <div class="card-sub">Average across all platforms · Mar 2026</div>
+      <canvas id="c-creative-type" height="210"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">ROAS by Platform × Creative Type</div>
+      <div class="card-sub">Best performing combinations</div>
+      <canvas id="c-creative-roas" height="210"></canvas>
+    </div>
+  </div>
+
+  <div class="section-lbl">Creative Tracker — All Creatives This Month</div>
+  <div class="card full">
+    <div class="card-title">Per-Creative Performance</div>
+    <div class="card-sub">CTR, spend, CPL, ROAS and verdict for each creative tested</div>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>ID</th><th>Creative Name</th><th>Type</th><th>Platform</th>
+          <th class="num">Impressions</th><th class="num">CTR</th><th class="num">Spend</th>
+          <th class="num">CPL</th><th class="num">ROAS</th><th class="num">Eng. Rate</th><th>Verdict</th>
+        </tr></thead>
+        <tbody id="creative-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ WEEKLY ══════════════════════════ -->
+<div class="panel" id="p-weekly">
+  <div class="section-lbl">Weekly Comparison — March 2026</div>
+  <div class="grid-eq">
+    <div class="card">
+      <div class="card-title">Weekly Revenue — Actual vs Target</div>
+      <div class="card-sub">Wk1–Wk4 · Mar 2026</div>
+      <canvas id="c-wk-rev" height="210"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Weekly Leads by Channel</div>
+      <div class="card-sub">Stacked · Wk1–Wk4</div>
+      <canvas id="c-wk-leads" height="210"></canvas>
+    </div>
+  </div>
+
+  <div class="section-lbl">Week-over-Week KPI Summary</div>
+  <div class="card full">
+    <div class="card-title">WoW KPI Table</div>
+    <div class="card-sub">Wk1–Wk4 performance with trend indicators</div>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>KPI</th><th>Channel</th><th class="num">Wk 1</th><th class="num">Wk 2</th>
+          <th class="num">Wk 3</th><th class="num">Wk 4</th><th class="num">WoW Change</th>
+          <th class="num">MTD</th><th class="num">Target</th><th>Trend</th>
+        </tr></thead>
+        <tbody id="weekly-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ MONTHLY ══════════════════════════ -->
+<div class="panel" id="p-monthly">
+  <div class="section-lbl">Monthly Performance Summary — Jan to Mar 2026</div>
+
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="kpi or"><div class="kpi-lbl">YTD Revenue</div><div class="kpi-val">$218.4K</div><div class="kpi-sub">Annual target $820K</div><span class="kpi-badge up">26.6% achieved</span></div>
+    <div class="kpi gr"><div class="kpi-lbl">YTD Leads</div><div class="kpi-val">3,424</div><div class="kpi-sub">Annual target 13,200</div><span class="kpi-badge up">25.9% achieved</span></div>
+    <div class="kpi nv"><div class="kpi-lbl">YTD Ad Spend</div><div class="kpi-val">$35.7K</div><div class="kpi-sub">Annual budget $156K</div><span class="kpi-badge up">22.9% of budget</span></div>
+    <div class="kpi bl"><div class="kpi-lbl">YTD ROAS Avg</div><div class="kpi-val">6.26x</div><div class="kpi-sub">Target 5.5x</div><span class="kpi-badge up">Above target</span></div>
+    <div class="kpi gr"><div class="kpi-lbl">YTD Closed Won</div><div class="kpi-val">56</div><div class="kpi-sub">Annual target 240</div><span class="kpi-badge up">23.3% achieved</span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Monthly Revenue — Actual vs Target</div>
+      <div class="card-sub">Jan–Mar 2026 with MoM growth</div>
+      <canvas id="c-mo-rev" height="200"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">MoM Growth Rates — Key Metrics</div>
+      <div class="card-sub">% change month over month</div>
+      <canvas id="c-mo-growth" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">Monthly Leads — All Channels</div>
+      <div class="card-sub">MQL + SQL stacked</div>
+      <canvas id="c-mo-leads" height="210"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Email Performance — Monthly</div>
+      <div class="card-sub">Open rate & CTR trend</div>
+      <canvas id="c-mo-email" height="210"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">Monthly Ad Spend vs ROAS</div>
+      <div class="card-sub">Spend efficiency trend</div>
+      <canvas id="c-mo-roas" height="210"></canvas>
+    </div>
+  </div>
+
+  <div class="section-lbl">Monthly KPI Comparison Table</div>
+  <div class="card full">
+    <div class="card-title">Jan – Mar 2026 · Full KPI Comparison</div>
+    <div class="card-sub">Month-over-month view across all tracked metrics</div>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr>
+          <th>KPI</th><th>Category</th>
+          <th class="num">Jan 2026</th><th class="num">Feb 2026</th><th class="num">Mar 2026</th>
+          <th class="num">Jan→Feb</th><th class="num">Feb→Mar</th><th class="num">YTD Total</th>
+        </tr></thead>
+        <tbody id="monthly-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// ══════════ NAV ══════════
+function go(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('p-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ══════════ CHART DEFAULTS ══════════
+const OR='#F05000', NV='#002535', BL='#20A0E0', GR='#20C000', RD='#C0392B';
+const ORA='rgba(240,80,0,', NVA='rgba(0,37,53,', BLA='rgba(32,160,224,', GRA='rgba(32,192,0,';
+const GRID={color:'rgba(0,0,0,.05)',drawBorder:false};
+Chart.defaults.color='#5A6B7E';
+Chart.defaults.font.family='DM Sans';
+Chart.defaults.font.size=11;
+Chart.defaults.plugins.legend.labels.boxWidth=10;
+Chart.defaults.plugins.legend.labels.padding=13;
+
+const charts={};
+function mkLine(id,labels,datasets,opts={}){
+  if(charts[id])charts[id].destroy();
+  charts[id]=new Chart(document.getElementById(id),{type:'line',data:{labels,datasets},options:{
+    responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{display:true},tooltip:{backgroundColor:'#fff',titleColor:'#0D1F2D',bodyColor:'#5A6B7E',borderColor:'#E2E8F0',borderWidth:1}},
+    scales:{x:{grid:{display:false},ticks:{color:'#5A6B7E'}},y:{grid:GRID,ticks:{color:'#5A6B7E'},...(opts.y||{})}},
+    elements:{line:{tension:.4},point:{radius:3,hoverRadius:5}},...opts
+  }});
+}
+function mkBar(id,labels,datasets,opts={}){
+  if(charts[id])charts[id].destroy();
+  charts[id]=new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets},options:{
+    responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{display:opts.legend!==false},tooltip:{backgroundColor:'#fff',titleColor:'#0D1F2D',bodyColor:'#5A6B7E',borderColor:'#E2E8F0',borderWidth:1}},
+    scales:{x:{grid:{display:false},ticks:{color:'#5A6B7E'},stacked:opts.stacked||false},
+            y:{grid:GRID,ticks:{color:'#5A6B7E'},stacked:opts.stacked||false}},...opts
+  }});
+}
+
+// ══════════ OVERVIEW CHARTS ══════════
+mkLine('c-rev-trend',['Jan','Feb','Mar'],[
+  {label:'Actual',data:[61400,72800,84200],borderColor:OR,backgroundColor:ORA+'.06)',fill:true,borderWidth:2},
+  {label:'Target',data:[65000,72000,78000],borderColor:'#C8D4E0',borderDash:[4,3],borderWidth:1.5,fill:false}
+]);
+
+charts['c-rev-mix']&&charts['c-rev-mix'].destroy();
+charts['c-rev-mix']=new Chart(document.getElementById('c-rev-mix'),{type:'doughnut',data:{
+  labels:['Meta Ads','Google Ads','LinkedIn Ads','YouTube','Email','Organic'],
+  datasets:[{data:[36400,26200,17200,4400,12600,7400],
+    backgroundColor:[OR,BL,NV,GR,'#9B59B6','#E67E22'],borderColor:'#fff',borderWidth:3,hoverOffset:6}]
+},options:{responsive:true,cutout:'68%',plugins:{legend:{display:true,position:'right'},tooltip:{backgroundColor:'#fff',titleColor:'#0D1F2D',bodyColor:'#5A6B7E',borderColor:'#E2E8F0',borderWidth:1}}}});
+
+mkBar('c-leads-ch',['Meta','Google','LinkedIn','YouTube','Email','Organic'],[
+  {label:'MQL',data:[218,152,102,44,198,84],backgroundColor:ORA+'.75)',borderRadius:4},
+  {label:'SQL',data:[126,88,62,24,118,48],backgroundColor:NVA+'.65)',borderRadius:4}
+],{legend:true});
+
+mkLine('c-spend-leads',['Wk 1','Wk 2','Wk 3','Wk 4'],[
+  {label:'Spend ($)',data:[2800,3100,3200,3300],borderColor:OR,backgroundColor:ORA+'.06)',fill:true,yAxisID:'y',borderWidth:2},
+  {label:'Leads',data:[268,298,328,354],borderColor:GR,yAxisID:'y1',borderWidth:2}
+],{scales:{y:{grid:GRID,position:'left',ticks:{color:'#5A6B7E',callback:v=>'$'+v.toLocaleString()}},y1:{grid:{display:false},position:'right',ticks:{color:GR}},x:{grid:{display:false},ticks:{color:'#5A6B7E'}}},plugins:{legend:{display:true}}});
+
+// ══════════ SCORECARD TABLE ══════════
+const scoreData=[
+  ['Total Impressions','All Channels','2.0M','2.18M','Feb: 2.0M','on'],
+  ['Total Clicks','All Channels','70K','74.3K','Feb: 68.2K','on'],
+  ['Overall CTR','All Channels','3.2%','3.42%','Feb: 3.12%','on'],
+  ['Ad Spend','Paid Ads','$13,000','$12,400','Feb: $11,900','on'],
+  ['CPL (Blended)','Paid Ads','<$12','$9.94','Feb: $11.20','on'],
+  ['ROAS','Paid Ads','5.5x','6.79x','Feb: 5.98x','on'],
+  ['LinkedIn Impressions','LinkedIn','130K','148.4K','Feb: 133.8K','on'],
+  ['LinkedIn Eng. Rate','LinkedIn','3.5%','4.61%','Feb: 4.12%','on'],
+  ['Email Open Rate','Email','24%','27.8%','Feb: 25.7%','on'],
+  ['Email CTR','Email','3.5%','4.12%','Feb: 3.72%','on'],
+  ['Email Conversions','Email','420','486','Feb: 428','on'],
+  ['Total Leads','All','1,100','1,248','Feb: 1,112','on'],
+  ['Demos Booked (B2B)','B2B','200','217','Feb: 196','on'],
+  ['Closed Won (B2B)','B2B','20','23','Feb: 19','on'],
+  ['Revenue','All','$78,000','$84,200','Feb: $72,800','on'],
+  ['Website Sessions (B2C)','B2C','40K','42.8K','Feb: 39.4K','on'],
+  ['Purchase CVR (B2C)','B2C','3.0%','2.87%','Feb: 3.04%','off'],
+  ['AOV (B2C)','B2C','$68','$71.20','Feb: $67.40','on'],
+];
+const sb=document.getElementById('scorecard-tbody');
+scoreData.forEach(([kpi,ch,tgt,act,last,st])=>{
+  const badge=st==='on'?'<span class="pill green">✓ On Track</span>':'<span class="pill red">⚠ Below</span>';
+  // rough achievement
+  const pn=(s)=>parseFloat(s.replace(/[$,Kx%<>]/g,''))*(s.includes('K')?1000:1);
+  const ach=Math.min(Math.round(pn(act)/pn(tgt)*100),100);
+  sb.innerHTML+=`<tr>
+    <td><strong>${kpi}</strong></td>
+    <td style="color:var(--sub)">${ch}</td>
+    <td class="num">${tgt}</td><td class="num"><strong>${act}</strong></td>
+    <td><div class="prog-wrap"><div class="prog"><div class="prog-fill" style="width:${ach}%;background:${st==='on'?GR:RD}"></div></div><span style="font-size:10.5px;font-family:DM Mono;width:36px;flex-shrink:0">${ach}%</span></div></td>
+    <td class="num" style="color:var(--sub)">${last}</td>
+    <td>${badge}</td>
+  </tr>`;
+});
+
+// ══════════ MARKETING CHARTS ══════════
+mkBar('c-li-post',['Video','Carousel','Image','Article','Poll','Text'],[
+  {data:[48200,36400,24800,18600,12400,8000],backgroundColor:[ORA+'.8)',ORA+'.65)',BLA+'.6)',NVA+'.5)',NVA+'.4)',NVA+'.3)'],borderRadius:4}
+],{legend:false});
+
+mkLine('c-email-trend',['Wk 1','Wk 2','Wk 3','Wk 4'],[
+  {label:'Open Rate %',data:[24.2,26.8,28.4,27.8],borderColor:OR,backgroundColor:ORA+'.06)',fill:true,borderWidth:2},
+  {label:'CTR %',data:[3.4,3.9,4.4,4.1],borderColor:BL,borderWidth:2}
+],{legend:true});
+
+mkBar('c-roas-plat',['Meta','Google','LinkedIn','YouTube'],[
+  {data:[7.0,6.39,7.17,6.29],backgroundColor:[ORA+'.8)',BLA+'.8)',NVA+'.75)',GRA+'.8)'],borderRadius:4}
+],{legend:false});
+
+// ══════════ SALES FUNNEL ══════════
+const b2bStages=[
+  {lbl:'Total Leads',val:1248,color:OR},
+  {lbl:'MQLs',val:515,color:'#E67E22'},
+  {lbl:'SQLs',val:300,color:BL},
+  {lbl:'Demos Booked',val:217,color:'#9B59B6'},
+  {lbl:'Proposals Sent',val:66,color:NV},
+  {lbl:'Closed Won',val:23,color:GR},
+];
+const b2bEl=document.getElementById('b2b-funnel');
+const maxB2B=b2bStages[0].val;
+b2bStages.forEach((s,i)=>{
+  const pct=Math.max(Math.round(s.val/maxB2B*100),5);
+  const conv=i>0?Math.round(s.val/b2bStages[i-1].val*100)+'% conv.':'';
+  b2bEl.innerHTML+=`<div class="funnel-stage"><div class="funnel-lbl">${s.lbl}</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${pct}%;background:${s.color}"><span class="funnel-val">${s.val.toLocaleString()}</span></div></div><div class="funnel-pct">${conv}</div></div>`;
+});
+
+const b2cStages=[
+  {lbl:'Sessions',val:42800,color:OR},
+  {lbl:'Product Views',val:20630,color:'#E67E22'},
+  {lbl:'Add to Cart',val:2558,color:BL},
+  {lbl:'Checkout Started',val:1680,color:'#9B59B6'},
+  {lbl:'Purchases',val:1499,color:GR},
+];
+const b2cEl=document.getElementById('b2c-funnel');
+const maxB2C=b2cStages[0].val;
+b2cStages.forEach((s,i)=>{
+  const pct=Math.max(Math.round(s.val/maxB2C*100),5);
+  const conv=i>0?Math.round(s.val/b2cStages[i-1].val*100)+'% conv.':'';
+  b2cEl.innerHTML+=`<div class="funnel-stage"><div class="funnel-lbl">${s.lbl}</div><div class="funnel-bar-wrap"><div class="funnel-bar" style="width:${pct}%;background:${s.color}"><span class="funnel-val">${s.val.toLocaleString()}</span></div></div><div class="funnel-pct">${conv}</div></div>`;
+});
+
+mkBar('c-pipeline',['Jan','Feb','Mar'],[
+  {label:'Pipeline Entries',data:[84,96,108],backgroundColor:BLA+'.25)',borderColor:BL,borderWidth:1.5,borderRadius:4},
+  {label:'Closed Won',data:[14,19,23],backgroundColor:GRA+'.75)',borderRadius:4}
+],{legend:true});
+
+mkBar('c-b2c-drop',['View→Cart','Cart→Checkout','Checkout→Buy','Session→Buy'],[
+  {data:[12.4,65.8,73.1,2.87],backgroundColor:[ORA+'.75)',BLA+'.75)',NVA+'.7)',GRA+'.75)'],borderRadius:4}
+],{legend:false});
+
+// ══════════ CREATIVES ══════════
+mkBar('c-creative-type',['Video','Carousel','Image','Story','GIF','Text'],[
+  {data:[5.82,4.14,2.98,2.44,3.12,1.68],backgroundColor:[ORA+'.85)',ORA+'.65)',BLA+'.7)',NVA+'.6)',NVA+'.5)',NVA+'.35)'],borderRadius:4}
+],{legend:false,y:{grid:GRID,ticks:{color:'#5A6B7E',callback:v=>v+'%'}}});
+
+const creativeROAS=[
+  {label:'Meta · Video',val:8.2},{label:'LI · Video',val:7.6},
+  {label:'Meta · Carousel',val:6.9},{label:'Google · Image',val:6.4},
+  {label:'LI · Carousel',val:7.1},{label:'YT · Video',val:5.8}
+];
+charts['c-creative-roas']&&charts['c-creative-roas'].destroy();
+charts['c-creative-roas']=new Chart(document.getElementById('c-creative-roas'),{type:'bar',data:{
+  labels:creativeROAS.map(d=>d.label),
+  datasets:[{label:'ROAS',data:creativeROAS.map(d=>d.val),backgroundColor:[ORA+'.8)',NVA+'.7)',ORA+'.65)',BLA+'.7)',NVA+'.65)',GRA+'.75)'],borderRadius:4}]
+},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#0D1F2D',bodyColor:'#5A6B7E',borderColor:'#E2E8F0',borderWidth:1}},scales:{x:{grid:GRID,ticks:{color:'#5A6B7E',callback:v=>v+'x'}},y:{grid:{display:false},ticks:{color:'#5A6B7E',font:{size:10}}}}}});
+
+const creatives=[
+  ['CR-001','Fabric Quality — Slow Motion','Video','Meta','142K','6.84%','$1,200','$7.12','8.20x','5.2%','🏆 Winner'],
+  ['CR-002','Minimal Wardrobe Carousel ×6','Carousel','LinkedIn','88K','4.62%','$980','$9.08','7.60x','4.8%','✅ Scale'],
+  ['CR-003','Drop Shadow Product Static','Image','Google','64K','3.12%','$640','$11.40','6.40x','—','⚙️ Test'],
+  ['CR-004','Behind the Brand Story','Story','Meta','52K','2.88%','$420','$12.80','5.10x','3.1%','⚙️ Test'],
+  ['CR-005','Unboxing Reel 15s','Video','Meta','108K','5.96%','$1,100','$7.84','7.80x','4.6%','🏆 Winner'],
+  ['CR-006','Generic Sale Banner','Image','Google','38K','1.42%','$380','$18.40','3.20x','—','🔴 Kill'],
+  ['CR-007','Testimonial Graphic','Carousel','LinkedIn','74K','4.14%','$860','$9.62','7.10x','3.9%','✅ Scale'],
+  ['CR-008','Text-Only Value Prop','Text','LinkedIn','28K','2.24%','$240','$14.20','4.80x','6.2%','⚙️ Test'],
+  ['CR-009','Product in Context Lifestyle','Image','Meta','96K','3.68%','$820','$10.40','6.80x','—','⚙️ Test'],
+  ['CR-010','YouTube Pre-roll 30s','Video','YouTube','268K','2.20%','$700','$6.48','6.29x','—','✅ Scale'],
+];
+const verdictStyle={'🏆 Winner':'color:#177E40;font-weight:700','✅ Scale':'color:'+GR,'⚙️ Test':'color:'+BL,'🔴 Kill':'color:'+RD+';font-weight:700'};
+const ctb=document.getElementById('creative-tbody');
+creatives.forEach(r=>{
+  ctb.innerHTML+=`<tr>
+    <td style="font-family:DM Mono;font-size:10.5px;color:var(--dim)">${r[0]}</td>
+    <td><strong>${r[1]}</strong></td><td style="color:var(--sub)">${r[2]}</td><td style="color:var(--sub)">${r[3]}</td>
+    <td class="num">${r[4]}</td>
+    <td class="num" style="color:var(--orange);font-weight:700">${r[5]}</td>
+    <td class="num">${r[6]}</td><td class="num">${r[7]}</td><td class="num">${r[8]}</td><td class="num">${r[9]}</td>
+    <td style="${verdictStyle[r[10]]||''}">${r[10]}</td>
+  </tr>`;
+});
+
+// ══════════ WEEKLY ══════════
+mkBar('c-wk-rev',['Wk 1','Wk 2','Wk 3','Wk 4'],[
+  {label:'Actual',data:[18400,20200,22600,23000],backgroundColor:ORA+'.8)',borderRadius:4},
+  {label:'Target',data:[19500,19500,19500,19500],type:'line',borderColor:'#C8D4E0',borderDash:[4,3],borderWidth:1.5,fill:false,pointRadius:0}
+],{legend:true});
+
+mkBar('c-wk-leads',['Wk 1','Wk 2','Wk 3','Wk 4'],[
+  {label:'Meta',data:[118,128,140,138],backgroundColor:ORA+'.8)',borderRadius:2},
+  {label:'Google',data:[82,88,98,100],backgroundColor:BLA+'.75)',borderRadius:2},
+  {label:'LinkedIn',data:[52,60,66,70],backgroundColor:NVA+'.7)',borderRadius:2},
+  {label:'Email',data:[72,80,88,78],backgroundColor:GRA+'.75)',borderRadius:2},
+],{stacked:true,legend:true});
+
+const weeklyData=[
+  ['Impressions','All','480K','510K','588K','602K'],
+  ['Clicks','All','16.2K','17.4K','20.2K','20.5K'],
+  ['Ad Spend','Paid','$2,800','$3,100','$3,200','$3,300'],
+  ['Leads','All','268','298','328','354'],
+  ['CPL','Paid','$10.45','$10.40','$9.76','$9.32'],
+  ['Email Open Rate','Email','24.2%','26.8%','28.4%','27.8%'],
+  ['Demo Calls Booked','B2B','46','52','58','61'],
+  ['Closed Won','B2B','4','5','7','7'],
+  ['Revenue','All','$18.4K','$20.2K','$22.6K','$23.0K'],
+  ['Website Sessions','B2C','9,800','10,400','11,200','11,400'],
+];
+const parseN=s=>parseFloat(String(s).replace(/[$,Kx%]/g,''))*(String(s).includes('K')?1000:1);
+const wb2=document.getElementById('weekly-tbody');
+weeklyData.forEach(([kpi,ch,w1,w2,w3,w4])=>{
+  const d=((parseN(w4)-parseN(w3))/parseN(w3)*100).toFixed(1);
+  const wow=`<span style="color:${+d>=0?GR:RD};font-weight:700">${+d>=0?'↑':'↓'} ${Math.abs(d)}%</span>`;
+  const n=s=>parseN(s);
+  const bars=[n(w1),n(w2),n(w3),n(w4)];const mx=Math.max(...bars);
+  const spark=bars.map(v=>`<div class="spark-b" style="height:${Math.max(v/mx*26,3)}px"></div>`).join('');
+  wb2.innerHTML+=`<tr>
+    <td><strong>${kpi}</strong></td><td style="color:var(--sub)">${ch}</td>
+    <td class="num">${w1}</td><td class="num">${w2}</td><td class="num">${w3}</td><td class="num">${w4}</td>
+    <td class="num">${wow}</td>
+    <td class="num" style="font-weight:700;color:var(--navy)">${w4}</td>
+    <td class="num" style="color:var(--dim)">—</td>
+    <td><div class="spark">${spark}</div></td>
+  </tr>`;
+});
+
+// ══════════ MONTHLY CHARTS ══════════
+mkBar('c-mo-rev',['Jan 2026','Feb 2026','Mar 2026'],[
+  {label:'Actual Revenue',data:[61400,72800,84200],backgroundColor:ORA+'.8)',borderRadius:4},
+  {label:'Target',data:[65000,72000,78000],type:'line',borderColor:'#C8D4E0',borderDash:[4,3],borderWidth:1.5,fill:false,pointRadius:3}
+],{legend:true});
+
+mkBar('c-mo-growth',['Impressions','Clicks','Leads','Revenue','ROAS','Email Open'],[
+  {label:'Jan→Feb %',data:[8.4,7.8,4.5,18.6,4.2,6.2],backgroundColor:BLA+'.7)',borderRadius:4},
+  {label:'Feb→Mar %',data:[9.2,8.9,12.1,15.7,13.5,8.2],backgroundColor:ORA+'.75)',borderRadius:4}
+],{legend:true});
+
+mkBar('c-mo-leads',['Jan 2026','Feb 2026','Mar 2026'],[
+  {label:'MQL',data:[432,468,515],backgroundColor:ORA+'.75)',borderRadius:4},
+  {label:'SQL',data:[248,272,300],backgroundColor:NVA+'.65)',borderRadius:4}
+],{legend:true});
+
+mkLine('c-mo-email',['Jan 2026','Feb 2026','Mar 2026'],[
+  {label:'Open Rate %',data:[22.8,25.7,27.8],borderColor:OR,backgroundColor:ORA+'.06)',fill:true,borderWidth:2},
+  {label:'CTR %',data:[3.2,3.72,4.12],borderColor:BL,borderWidth:2}
+],{legend:true});
+
+mkLine('c-mo-roas',['Jan 2026','Feb 2026','Mar 2026'],[
+  {label:'ROAS',data:[5.48,5.98,6.79],borderColor:GR,backgroundColor:GRA+'.06)',fill:true,borderWidth:2},
+  {label:'Spend ($K)',data:[10.9,12.4,12.4],borderColor:OR,yAxisID:'y1',borderWidth:2,borderDash:[4,3]}
+],{legend:true,scales:{y:{grid:GRID,ticks:{color:'#5A6B7E',callback:v=>v+'x'}},y1:{grid:{display:false},position:'right',ticks:{color:OR,callback:v=>'$'+v+'K'}},x:{grid:{display:false},ticks:{color:'#5A6B7E'}}}});
+
+// ══════════ MONTHLY TABLE ══════════
+const monthlyRows=[
+  ['Total Impressions','Reach & Awareness','1.82M','2.0M','2.18M'],
+  ['Total Clicks','Reach & Awareness','62.4K','68.2K','74.3K'],
+  ['Overall CTR','Reach & Awareness','3.10%','3.12%','3.42%'],
+  ['LinkedIn Impressions','Organic Social','128.4K','133.8K','148.4K'],
+  ['LinkedIn Eng. Rate','Organic Social','4.02%','4.12%','4.61%'],
+  ['LinkedIn Followers +','Organic Social','+242','+258','+312'],
+  ['Email Open Rate','Email','22.8%','25.7%','27.8%'],
+  ['Email CTR','Email','3.2%','3.72%','4.12%'],
+  ['Email Conversions','Email','398','428','486'],
+  ['Total Leads','Acquisition','1,064','1,112','1,248'],
+  ['MQLs','Acquisition','432','468','515'],
+  ['SQLs','Acquisition','248','272','300'],
+  ['CPL (Blended)','Acquisition','$11.84','$11.20','$9.94'],
+  ['Ad Spend','Paid Ads','$10,900','$12,400','$12,400'],
+  ['ROAS','Paid Ads','5.48x','5.98x','6.79x'],
+  ['Demo Calls Booked','Sales','178','196','217'],
+  ['Closed Won (B2B)','Sales','14','19','23'],
+  ['Revenue','Revenue','$61,400','$72,800','$84,200'],
+  ['AOV (B2C)','Revenue','$64.80','$67.40','$71.20'],
+  ['CAC (Blended)','Revenue','$11.84','$10.62','$9.94'],
+  ['Website Sessions','B2C','36,200','39,400','42,800'],
+  ['Purchase CVR (B2C)','B2C','3.08%','3.04%','2.87%'],
+];
+const mtb=document.getElementById('monthly-tbody');
+let lastCat='';
+monthlyRows.forEach(([kpi,cat,jan,feb,mar])=>{
+  if(cat!==lastCat){
+    mtb.innerHTML+=`<tr class="section"><td colspan="8">${cat}</td></tr>`;
+    lastCat=cat;
+  }
+  const p1=s=>parseFloat(s.replace(/[$,Kx%+]/g,''))*(s.includes('K')?1000:1);
+  const d1=((p1(feb)-p1(jan))/Math.abs(p1(jan))*100).toFixed(1);
+  const d2=((p1(mar)-p1(feb))/Math.abs(p1(feb))*100).toFixed(1);
+  const c1=+d1>=0?'pos':'neg';const c2=+d2>=0?'pos':'neg';
+  // YTD - sum for counts, show latest for rates
+  const isRate=kpi.includes('%')||kpi.includes('Rate')||kpi.includes('CVR')||kpi.includes('ROAS')||kpi.includes('CTR')||kpi.includes('Margin')||kpi.includes('CAC')||kpi.includes('CPL')||kpi.includes('AOV')||kpi.includes('Eng.')||kpi.includes('Follower');
+  const ytd=isRate?mar:`${(p1(jan)+p1(feb)+p1(mar)).toLocaleString()}`;
+  mtb.innerHTML+=`<tr>
+    <td><strong>${kpi}</strong></td><td style="color:var(--sub);font-size:11px">${cat}</td>
+    <td class="num">${jan}</td><td class="num">${feb}</td><td class="num">${mar}</td>
+    <td class="num ${c1}">${+d1>=0?'↑':'↓'} ${Math.abs(d1)}%</td>
+    <td class="num ${c2}">${+d2>=0?'↑':'↓'} ${Math.abs(d2)}%</td>
+    <td class="num" style="font-weight:700">${isRate?mar:ytd}</td>
+  </tr>`;
+});
+</script>
+</body>
 </html>
-
-
-
