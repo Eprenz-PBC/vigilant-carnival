@@ -1,0 +1,13 @@
+reporting_week,period,partner_name,owner,stage,leads,meetings,deals,revenue,status,target_list_count,discovery_count,scheduled_count,active_conv_count,negotiation_count,deals_won_count,idle_days,next_action
+2026-04-06,Q2 2026,Alliance IA Group,David R.,Active Partner,2140,14,6,28500,Active,42,28,18,11,5,14,,
+2026-04-06,Q2 2026,Patriot FMO,Sarah M.,Active Partner,1880,11,5,23750,Active,42,28,18,11,5,14,,
+2026-04-06,Q2 2026,Premier IA Group,David R.,Active Partner,1620,9,3,14250,Active,42,28,18,11,5,14,,
+2026-04-06,Q2 2026,TexasBroker Network,Sarah M.,Negotiation,980,5,0,,Negotiating,42,28,18,11,5,14,,
+2026-04-06,Q2 2026,NW Agents Co-op,,Active Conv,,,,,Watchlist,42,28,18,11,5,14,32,Follow up needed
+2026-04-06,Q2 2026,Gulf States IA,,Discovery,,,,,Watchlist,42,28,18,11,5,14,28,Re-engage or Drop
+2026-04-13,Q2 2026,Alliance IA Group,David R.,Active Partner,2215,15,6,29400,Active,44,29,19,12,5,15,,
+2026-04-13,Q2 2026,Patriot FMO,Sarah M.,Active Partner,1930,12,5,24100,Active,44,29,19,12,5,15,,
+2026-04-13,Q2 2026,Premier IA Group,David R.,Active Partner,1695,10,4,15350,Active,44,29,19,12,5,15,,
+2026-04-13,Q2 2026,TexasBroker Network,Sarah M.,Negotiation,1010,5,1,4500,Negotiating,44,29,19,12,5,15,,
+2026-04-13,Q2 2026,NW Agents Co-op,,Active Conv,,,,,Watchlist,44,29,19,12,5,15,39,Follow up needed
+2026-04-13,Q2 2026,Gulf States IA,,Discovery,,,,,Watchlist,44,29,19,12,5,15,35,Re-engage or Drop

@@ -1,0 +1,9 @@
+reporting_week,period,campaign,audience,emails_sent,click_rate,trial_signups,conversions,revenue,status,list_cost,email_platform_cost,cost_per_engaged,cost_per_demo,cost_per_buyer,revenue_per_buyer
+2026-04-06,Q2 2026,Q2 Independent Agents,IA / Small Agency,8400,0.241,298,98,92050,Active,4200,980,1.23,8.28,55.80,974
+2026-04-06,Q2 2026,Agency Growth Series,Mid-Market Agency,5200,0.198,184,64,68800,Active,4200,980,1.23,8.28,55.80,974
+2026-04-06,Q2 2026,Reactivation - Lapsed,Prior Contacts,3100,0.184,94,28,28700,Running,4200,980,1.23,8.28,55.80,974
+2026-04-06,Q2 2026,Event Follow-Up,Event Attendees,1540,0.312,40,15,10200,Complete,4200,980,1.23,8.28,55.80,974
+2026-04-13,Q2 2026,Q2 Independent Agents,IA / Small Agency,8610,0.236,304,101,94800,Active,4200,980,1.20,8.10,54.90,978
+2026-04-13,Q2 2026,Agency Growth Series,Mid-Market Agency,5340,0.205,190,67,71100,Active,4200,980,1.20,8.10,54.90,978
+2026-04-13,Q2 2026,Reactivation - Lapsed,Prior Contacts,3180,0.179,88,25,25950,Running,4200,980,1.20,8.10,54.90,978
+2026-04-13,Q2 2026,Event Follow-Up,Event Attendees,1620,0.308,43,16,11250,Complete,4200,980,1.20,8.10,54.90,978
